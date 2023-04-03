@@ -15,7 +15,7 @@ import (
 //
 // Writes one row to a CSV file per step.
 type CSV struct {
-	Observer       Observer
+	Observer       model.Observer
 	File           string
 	Sep            string
 	UpdateInterval int

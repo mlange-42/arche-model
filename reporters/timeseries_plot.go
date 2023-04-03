@@ -17,7 +17,7 @@ import (
 // TimeSeriesPlot reporter
 type TimeSeriesPlot struct {
 	Bounds         systems.Bounds
-	Observer       Observer
+	Observer       model.Observer
 	UpdateInterval int
 	DrawInterval   int
 	systems.GlFrame

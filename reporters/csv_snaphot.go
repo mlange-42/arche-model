@@ -15,7 +15,7 @@ import (
 //
 // Writes a CSV file per step.
 type SnapshotCSV struct {
-	Observer       MatrixObserver
+	Observer       model.MatrixObserver
 	FilePattern    string
 	Sep            string
 	UpdateInterval int

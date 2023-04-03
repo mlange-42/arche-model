@@ -1,4 +1,4 @@
-package reporters
+package model
 
 import (
 	"github.com/mlange-42/arche/ecs"

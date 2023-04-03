@@ -11,7 +11,7 @@ import (
 // Print reporter
 type Print struct {
 	UpdateInterval int
-	Observer       Observer
+	Observer       model.Observer
 	header         []string
 	timeRes        generic.Resource[model.Time]
 }
