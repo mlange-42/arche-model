@@ -3,7 +3,7 @@ package systems
 import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/mlange-42/arche-models/model"
+	"github.com/mlange-42/arche-model/model"
 	"golang.org/x/image/colornames"
 )
 

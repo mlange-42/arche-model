@@ -3,8 +3,8 @@ package reporters
 import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/mlange-42/arche-models/model"
-	"github.com/mlange-42/arche-models/systems"
+	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/systems"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"

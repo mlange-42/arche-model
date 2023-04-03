@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mlange-42/arche-models/model"
+	"github.com/mlange-42/arche-model/model"
 )
 
 // SnapshotCSV reporter.
