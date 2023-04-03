@@ -10,27 +10,20 @@ import (
 
 // System is the interface for ECS systems.
 type System interface {
-	// Initialize the system
-	Initialize(w *ecs.World)
-	// Update the system
-	Update(w *ecs.World)
-	// Finalize the system
-	Finalize(w *ecs.World)
+	Initialize(w *ecs.World) // Initialize the system.
+	Update(w *ecs.World)     // Update the system.
+	Finalize(w *ecs.World)   // Finalize the system.
 }
 
 // UISystem is the interface for ECS systems that display UI.
 type UISystem interface {
-	// InitializeUI the system.
-	InitializeUI(w *ecs.World)
-	// UpdateUI/update the system.
-	UpdateUI(w *ecs.World)
-	// PostUpdateUI does the final part of updating, e.g. update the GL window.
-	PostUpdateUI(w *ecs.World)
-	// FinalizeUI the system.
-	FinalizeUI(w *ecs.World)
+	InitializeUI(w *ecs.World) // InitializeUI the system.
+	UpdateUI(w *ecs.World)     // UpdateUI/update the system.
+	PostUpdateUI(w *ecs.World) // PostUpdateUI does the final part of updating, e.g. update the GL window.
+	FinalizeUI(w *ecs.World)   // FinalizeUI the system.
 }
 
-// Systems manages ECS Systems.
+// Systems manages and schedules ECS [System] and [UISystem] instances.
 type Systems struct {
 	world *ecs.World
 	// Frames per second for UI systems.
@@ -53,18 +46,23 @@ type Systems struct {
 	timeRes generic.Resource[Time]
 }
 
-// AddSystem adds a system to the model
+// AddSystem adds a [System] to the model.
+//
+// Panics if the system is also a [UISystem].
+// To add systems that implement both [System] and [UISystem], use [Systems.AddUISystem]
 func (s *Systems) AddSystem(sys System) {
-	if sys, ok := sys.(UISystem); ok {
-		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddSystem.", sys))
-	}
 	if s.initialized {
 		panic("adding systems after model initialization is not implemented yet")
+	}
+	if sys, ok := sys.(UISystem); ok {
+		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddSystem.", sys))
 	}
 	s.systems = append(s.systems, sys)
 }
 
-// AddUISystem adds an UI system to the model
+// AddUISystem adds an [UISystem] to the model.
+//
+// Adds the [UISystem] also as a normal [System] if it implements the interface.
 func (s *Systems) AddUISystem(sys UISystem) {
 	if s.initialized {
 		panic("adding systems after model initialization is not implemented yet")
@@ -75,16 +73,23 @@ func (s *Systems) AddUISystem(sys UISystem) {
 	}
 }
 
-// RemoveSystem removes a system from the model
+// RemoveSystem removes a system from the model.
+//
+// Systems can also be removed during a model run.
+// However, this will take effect only after the end of the full model step.
 func (s *Systems) RemoveSystem(sys System) {
 	s.toRemove = append(s.toRemove, sys)
 }
 
-// RemoveUISystem removes an UI system from the model
+// RemoveUISystem removes an UI system from the model.
+//
+// Systems can also be removed during a model run.
+// However, this will take effect only after the end of the full model step.
 func (s *Systems) RemoveUISystem(sys UISystem) {
 	s.uiToRemove = append(s.uiToRemove, sys)
 }
 
+// Removes systems that were removed during the model step.
 func (s *Systems) removeSystems() {
 	for _, sys := range s.toRemove {
 		idx := -1
@@ -116,7 +121,7 @@ func (s *Systems) removeSystems() {
 	s.uiToRemove = s.uiToRemove[:0]
 }
 
-// initialize all systems
+// Initialize all systems.
 func (s *Systems) initialize() {
 	s.timeRes = generic.NewResource[Time](s.world)
 
@@ -133,7 +138,7 @@ func (s *Systems) initialize() {
 	s.initialized = true
 }
 
-// update all systems
+// Update all systems.
 func (s *Systems) update() {
 	update := s.updateSystems()
 	s.updateUISystems(update)
@@ -143,9 +148,31 @@ func (s *Systems) update() {
 	if update {
 		time := s.timeRes.Get()
 		time.Tick++
+	} else {
+		s.wait()
 	}
 }
 
+// Calculates and waits the time until the next update of UI update.
+func (s *Systems) wait() {
+	t := time.Now()
+	nextUpdate := t
+	if s.Tps > 0 {
+		nextUpdate = s.lastUpdate.Add(time.Second / time.Duration(s.Tps))
+	}
+	if s.Fps > 0 {
+		nextUpdate2 := s.lastDraw.Add(time.Second / time.Duration(s.Fps))
+		if nextUpdate2.Before(nextUpdate) {
+			nextUpdate = nextUpdate2
+		}
+	}
+	wait := nextUpdate.Sub(t)
+	if wait > 0 {
+		time.Sleep(wait)
+	}
+}
+
+// Update normal systems.
 func (s *Systems) updateSystems() bool {
 	update := false
 	if s.Tps <= 0 {
@@ -167,6 +194,7 @@ func (s *Systems) updateSystems() bool {
 	return update
 }
 
+// Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
 	if len(s.uiSystems) > 0 {
 		if s.Fps <= 0 {
@@ -194,7 +222,7 @@ func (s *Systems) updateUISystems(updated bool) {
 	}
 }
 
-// finalize all systems
+// Finalize all systems.
 func (s *Systems) finalize() {
 	for _, sys := range s.systems {
 		sys.Finalize(s.world)
@@ -205,6 +233,7 @@ func (s *Systems) finalize() {
 	s.removeSystems()
 }
 
+// Run the model.
 func (s *Systems) run() {
 	if !s.initialized {
 		s.initialize()

@@ -1,4 +1,4 @@
-package systems
+package system
 
 import (
 	"github.com/mlange-42/arche-model/model"
@@ -6,9 +6,11 @@ import (
 	"github.com/mlange-42/arche/generic"
 )
 
-// FixedTermination system
+// FixedTermination system.
+//
+// Terminates a model run after a fixed number of ticks.
 type FixedTermination struct {
-	Steps   int64
+	Steps   int64 // Number of simulation ticks to run.
 	timeRes generic.Resource[model.Time]
 }
 

@@ -1,4 +1,4 @@
-package systems
+package reporter
 
 import (
 	"fmt"
@@ -15,10 +15,10 @@ import (
 //
 // Writes a CSV file per step.
 type SnapshotCSV struct {
-	Observer       model.MatrixObserver
-	FilePattern    string
-	Sep            string
-	UpdateInterval int
+	Observer       model.MatrixObserver // Observer to get data from.
+	FilePattern    string               // File path and pattern for output files, like out/foo-%06d.csv
+	Sep            string               // Column separator. Default ",".
+	UpdateInterval int                  // Update interval in model ticks.
 	header         []string
 	builder        strings.Builder
 	timeRes        generic.Resource[model.Time]
