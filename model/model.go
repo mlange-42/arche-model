@@ -3,17 +3,16 @@ package model
 import (
 	"time"
 
-	"golang.org/x/exp/rand"
-
-	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche/ecs"
+	"golang.org/x/exp/rand"
 )
 
 // Model is the top-level ecs entrypoint.
 type Model struct {
 	ecs.World
-	systems
+	Systems
 	rand Rand
+	time Time
 }
 
 // New creates a new model.
@@ -23,10 +22,13 @@ func New(config ...ecs.Config) *Model {
 	}
 	mod.Fps = 30
 	mod.Tps = 0
-	mod.systems.model = &mod
+	mod.Systems.world = &mod.World
 
 	mod.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
 	ecs.AddResource(&mod.World, &mod.rand)
+	mod.time = Time{}
+	ecs.AddResource(&mod.World, &mod.time)
+	ecs.AddResource(&mod.World, &mod.Systems)
 
 	return &mod
 }
@@ -46,6 +48,5 @@ func (m *Model) Seed(seed ...uint64) {
 
 // Run runs a model
 func (m *Model) Run() {
-	m.systems.model = m
-	pixelgl.Run(m.systems.run)
+	m.Systems.run()
 }

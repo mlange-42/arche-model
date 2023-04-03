@@ -4,34 +4,35 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/faiface/pixel/pixelgl"
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
 )
 
 // System is the interface for ECS systems.
 type System interface {
 	// Initialize the system
-	Initialize(m *Model)
+	Initialize(w *ecs.World)
 	// Update the system
-	Update(m *Model)
+	Update(w *ecs.World)
 	// Finalize the system
-	Finalize(m *Model)
+	Finalize(w *ecs.World)
 }
 
 // UISystem is the interface for ECS systems that display UI.
 type UISystem interface {
-	// InitializeUI the system
-	InitializeUI(m *Model)
-	// UpdateUI/update the system
-	UpdateUI(m *Model)
-	// FinalizeUI the system
-	FinalizeUI(m *Model)
-	// Returns the system's window if there is any.
-	Window() *pixelgl.Window
+	// InitializeUI the system.
+	InitializeUI(w *ecs.World)
+	// UpdateUI/update the system.
+	UpdateUI(w *ecs.World)
+	// PostUpdateUI does the final part of updating, e.g. update the GL window.
+	PostUpdateUI(w *ecs.World)
+	// FinalizeUI the system.
+	FinalizeUI(w *ecs.World)
 }
 
-// systems manages ECS systems.
-type systems struct {
-	model *Model
+// Systems manages ECS Systems.
+type Systems struct {
+	world *ecs.World
 	// Frames per second for UI systems.
 	// Values <= 0 sync FPS with TPS.
 	Fps float64
@@ -47,21 +48,27 @@ type systems struct {
 	lastDraw   time.Time
 	lastUpdate time.Time
 
-	Step        int64
-	Finished    bool
 	initialized bool
+
+	timeRes generic.Resource[Time]
 }
 
 // AddSystem adds a system to the model
-func (s *systems) AddSystem(sys System) {
+func (s *Systems) AddSystem(sys System) {
 	if sys, ok := sys.(UISystem); ok {
 		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddSystem.", sys))
+	}
+	if s.initialized {
+		panic("adding systems after model initialization is not implemented yet")
 	}
 	s.systems = append(s.systems, sys)
 }
 
 // AddUISystem adds an UI system to the model
-func (s *systems) AddUISystem(sys UISystem) {
+func (s *Systems) AddUISystem(sys UISystem) {
+	if s.initialized {
+		panic("adding systems after model initialization is not implemented yet")
+	}
 	s.uiSystems = append(s.uiSystems, sys)
 	if sys, ok := sys.(System); ok {
 		s.systems = append(s.systems, sys)
@@ -69,16 +76,16 @@ func (s *systems) AddUISystem(sys UISystem) {
 }
 
 // RemoveSystem removes a system from the model
-func (s *systems) RemoveSystem(sys System) {
+func (s *Systems) RemoveSystem(sys System) {
 	s.toRemove = append(s.toRemove, sys)
 }
 
 // RemoveUISystem removes an UI system from the model
-func (s *systems) RemoveUISystem(sys UISystem) {
+func (s *Systems) RemoveUISystem(sys UISystem) {
 	s.uiToRemove = append(s.uiToRemove, sys)
 }
 
-func (s *systems) removeSystems() {
+func (s *Systems) removeSystems() {
 	for _, sys := range s.toRemove {
 		idx := -1
 		for idx = 0; idx < len(s.systems); idx++ {
@@ -89,7 +96,7 @@ func (s *systems) removeSystems() {
 		if idx < 0 {
 			panic("System not in the model")
 		}
-		s.systems[idx].Finalize(s.model)
+		s.systems[idx].Finalize(s.world)
 		s.systems = append(s.systems[:idx], s.systems[idx+1:]...)
 	}
 	for _, sys := range s.uiToRemove {
@@ -102,7 +109,7 @@ func (s *systems) removeSystems() {
 		if idx < 0 {
 			panic("System not in the model")
 		}
-		s.uiSystems[idx].FinalizeUI(s.model)
+		s.uiSystems[idx].FinalizeUI(s.world)
 		s.uiSystems = append(s.uiSystems[:idx], s.uiSystems[idx+1:]...)
 	}
 	s.toRemove = s.toRemove[:0]
@@ -110,38 +117,41 @@ func (s *systems) removeSystems() {
 }
 
 // initialize all systems
-func (s *systems) initialize() {
+func (s *Systems) initialize() {
+	s.timeRes = generic.NewResource[Time](s.world)
+
 	if s.initialized {
 		panic("model is already initialized")
 	}
 	for _, sys := range s.systems {
-		sys.Initialize(s.model)
+		sys.Initialize(s.world)
 	}
 	for _, sys := range s.uiSystems {
-		sys.InitializeUI(s.model)
+		sys.InitializeUI(s.world)
 	}
 	s.removeSystems()
 	s.initialized = true
 }
 
 // update all systems
-func (s *systems) update() {
+func (s *Systems) update() {
 	update := s.updateSystems()
 	s.updateUISystems(update)
 
 	s.removeSystems()
 
 	if update {
-		s.Step++
+		time := s.timeRes.Get()
+		time.Tick++
 	}
 }
 
-func (s *systems) updateSystems() bool {
+func (s *Systems) updateSystems() bool {
 	update := false
 	if s.Tps <= 0 {
 		update = true
 		for _, sys := range s.systems {
-			sys.Update(s.model)
+			sys.Update(s.world)
 		}
 	} else {
 		t := time.Now()
@@ -150,25 +160,22 @@ func (s *systems) updateSystems() bool {
 		if update {
 			s.lastUpdate = t
 			for _, sys := range s.systems {
-				sys.Update(s.model)
+				sys.Update(s.world)
 			}
 		}
 	}
 	return update
 }
 
-func (s *systems) updateUISystems(updated bool) {
+func (s *Systems) updateUISystems(updated bool) {
 	if len(s.uiSystems) > 0 {
 		if s.Fps <= 0 {
 			if updated {
 				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.model)
+					sys.UpdateUI(s.world)
 				}
 				for _, sys := range s.uiSystems {
-					win := sys.Window()
-					if win != nil {
-						win.Update()
-					}
+					sys.PostUpdateUI(s.world)
 				}
 			}
 		} else {
@@ -177,13 +184,10 @@ func (s *systems) updateUISystems(updated bool) {
 			if 1.0/frameDur.Seconds() <= s.Fps {
 				s.lastDraw = t
 				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.model)
+					sys.UpdateUI(s.world)
 				}
 				for _, sys := range s.uiSystems {
-					win := sys.Window()
-					if win != nil {
-						win.Update()
-					}
+					sys.PostUpdateUI(s.world)
 				}
 			}
 		}
@@ -191,23 +195,25 @@ func (s *systems) updateUISystems(updated bool) {
 }
 
 // finalize all systems
-func (s *systems) finalize() {
+func (s *Systems) finalize() {
 	for _, sys := range s.systems {
-		sys.Finalize(s.model)
+		sys.Finalize(s.world)
 	}
 	for _, sys := range s.uiSystems {
-		sys.FinalizeUI(s.model)
+		sys.FinalizeUI(s.world)
 	}
 	s.removeSystems()
 }
 
-func (s *systems) run() {
+func (s *Systems) run() {
 	if !s.initialized {
 		s.initialize()
 	}
 
-	s.Step = 0
-	for !s.Finished {
+	time := s.timeRes.Get()
+	time.Tick = 0
+
+	for !time.Finished {
 		s.update()
 	}
 

@@ -1,4 +1,4 @@
-package reporters
+package systems
 
 import (
 	"fmt"
@@ -7,26 +7,28 @@ import (
 	"strings"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
 )
 
 // CSV reporter.
 //
 // Writes one row to a CSV file per step.
 type CSV struct {
-	Observer       Observer
+	Observer       model.Observer
 	File           string
 	Sep            string
 	UpdateInterval int
 	file           *os.File
 	header         []string
 	builder        strings.Builder
+	timeRes        generic.Resource[model.Time]
 }
 
 // Initialize the system
-func (s *CSV) Initialize(m *model.Model) {
-	s.Observer.Initialize(m)
-	s.header = s.Observer.Header(m)
-
+func (s *CSV) Initialize(w *ecs.World) {
+	s.Observer.Initialize(w)
+	s.header = s.Observer.Header(w)
 	if s.Sep == "" {
 		s.Sep = ","
 	}
@@ -44,15 +46,19 @@ func (s *CSV) Initialize(m *model.Model) {
 	if err != nil {
 		panic(err)
 	}
+
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *CSV) Update(m *model.Model) {
-	s.Observer.Update(m)
-	if s.UpdateInterval == 0 || m.Step%int64(s.UpdateInterval) == 0 {
-		values := s.Observer.Values(m)
+func (s *CSV) Update(w *ecs.World) {
+	time := s.timeRes.Get()
+
+	s.Observer.Update(w)
+	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
+		values := s.Observer.Values(w)
 		s.builder.Reset()
-		fmt.Fprintf(&s.builder, "%d%s", m.Step, s.Sep)
+		fmt.Fprintf(&s.builder, "%d%s", time.Tick, s.Sep)
 		for i, v := range values {
 			fmt.Fprintf(&s.builder, "%f", v)
 			if i < len(values)-1 {
@@ -67,7 +73,7 @@ func (s *CSV) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *CSV) Finalize(m *model.Model) {
+func (s *CSV) Finalize(w *ecs.World) {
 	if err := s.file.Close(); err != nil {
 		panic(err)
 	}

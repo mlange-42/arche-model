@@ -1,4 +1,4 @@
-package reporters
+package systems
 
 import (
 	"fmt"
@@ -7,24 +7,27 @@ import (
 	"strings"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
 )
 
 // SnapshotCSV reporter.
 //
 // Writes a CSV file per step.
 type SnapshotCSV struct {
-	Observer       MatrixObserver
+	Observer       model.MatrixObserver
 	FilePattern    string
 	Sep            string
 	UpdateInterval int
 	header         []string
 	builder        strings.Builder
+	timeRes        generic.Resource[model.Time]
 }
 
 // Initialize the system
-func (s *SnapshotCSV) Initialize(m *model.Model) {
-	s.Observer.Initialize(m)
-	s.header = s.Observer.Header(m)
+func (s *SnapshotCSV) Initialize(w *ecs.World) {
+	s.Observer.Initialize(w)
+	s.header = s.Observer.Header(w)
 
 	if s.Sep == "" {
 		s.Sep = ","
@@ -34,13 +37,17 @@ func (s *SnapshotCSV) Initialize(m *model.Model) {
 	if err != nil {
 		panic(err)
 	}
+
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *SnapshotCSV) Update(m *model.Model) {
-	s.Observer.Update(m)
-	if s.UpdateInterval == 0 || m.Step%int64(s.UpdateInterval) == 0 {
-		file, err := os.Create(fmt.Sprintf(s.FilePattern, m.Step))
+func (s *SnapshotCSV) Update(w *ecs.World) {
+	time := s.timeRes.Get()
+
+	s.Observer.Update(w)
+	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
+		file, err := os.Create(fmt.Sprintf(s.FilePattern, time.Tick))
 		if err != nil {
 			panic(err)
 		}
@@ -56,7 +63,7 @@ func (s *SnapshotCSV) Update(m *model.Model) {
 			panic(err)
 		}
 
-		values := s.Observer.Values(m)
+		values := s.Observer.Values(w)
 		s.builder.Reset()
 		for _, row := range values {
 			for i, v := range row {
@@ -75,4 +82,4 @@ func (s *SnapshotCSV) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *SnapshotCSV) Finalize(m *model.Model) {}
+func (s *SnapshotCSV) Finalize(w *ecs.World) {}
