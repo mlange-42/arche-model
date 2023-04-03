@@ -12,17 +12,21 @@ import (
 type Model struct {
 	ecs.World
 	systems
+	rand Rand
 }
 
 // New creates a new model.
 func New(config ...ecs.Config) *Model {
-	world := ecs.NewWorld(config...)
 	var mod = Model{
-		World: world,
+		World: ecs.NewWorld(config...),
 	}
 	mod.Fps = 30
 	mod.Tps = 0
 	mod.systems.model = &mod
+
+	mod.rand = Rand{rand.NewSource(time.Now().UnixNano())}
+	ecs.AddResource(&mod.World, &mod.rand)
+
 	return &mod
 }
 
@@ -31,9 +35,9 @@ func New(config ...ecs.Config) *Model {
 func (m *Model) Seed(seed ...int64) {
 	switch len(seed) {
 	case 0:
-		rand.Seed(time.Now().UnixNano())
+		m.rand.Seed(time.Now().UnixNano())
 	case 1:
-		rand.Seed(seed[0])
+		m.rand.Seed(seed[0])
 	default:
 		panic("can only use a single random seed")
 	}
