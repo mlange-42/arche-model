@@ -20,8 +20,6 @@ jobs:
           go get .
       - name: Build Linux
         run: GOOS=linux GOARCH=amd64 go build ./...
-      - name: Build MacOS
-        run: GOOS=darwin GOARCH=amd64 go build ./...
 
   test:
     name: Run tests
