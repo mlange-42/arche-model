@@ -1,6 +1,9 @@
 package systems
 
 import (
+	"fmt"
+	"log"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche-model/model"
@@ -38,11 +41,6 @@ type GlFrame struct {
 	timeRes      generic.Resource[model.Time]
 }
 
-// Window returns the window of this system.
-func (s *GlFrame) Window() *pixelgl.Window {
-	return s.window
-}
-
 // Add adds a drawer
 func (s *GlFrame) Add(d GlDrawer) {
 	s.drawers = append(s.drawers, d)
@@ -61,6 +59,16 @@ func (s *GlFrame) InitializeUI(w *ecs.World) {
 		Bounds:   pixel.R(0, 0, float64(s.Bounds.Width), float64(s.Bounds.Height)),
 		Position: pixel.V(float64(s.Bounds.X), float64(s.Bounds.Y)),
 	}
+
+	defer func() {
+		if err := recover(); err != nil {
+			txt := fmt.Sprint(err)
+			if txt == "mainthread: did not call Run" {
+				log.Fatal("ERROR: when using graphics via the pixel engine, run the model like this:\n    pixelgl.Run(model.Run)")
+			}
+			panic(err)
+		}
+	}()
 
 	var err error
 	s.window, err = pixelgl.NewWindow(cfg)
@@ -88,6 +96,11 @@ func (s *GlFrame) UpdateUI(w *ecs.World) {
 		}
 	}
 	s.step++
+}
+
+// PostUpdateUI updates the GL window.
+func (s *GlFrame) PostUpdateUI(w *ecs.World) {
+	s.window.Update()
 }
 
 // FinalizeUI the system

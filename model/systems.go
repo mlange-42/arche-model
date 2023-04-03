@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
@@ -21,14 +20,14 @@ type System interface {
 
 // UISystem is the interface for ECS systems that display UI.
 type UISystem interface {
-	// InitializeUI the system
+	// InitializeUI the system.
 	InitializeUI(w *ecs.World)
-	// UpdateUI/update the system
+	// UpdateUI/update the system.
 	UpdateUI(w *ecs.World)
-	// FinalizeUI the system
+	// PostUpdateUI does the final part of updating, e.g. update the GL window.
+	PostUpdateUI(w *ecs.World)
+	// FinalizeUI the system.
 	FinalizeUI(w *ecs.World)
-	// Returns the system's window if there is any.
-	Window() *pixelgl.Window
 }
 
 // Systems manages ECS Systems.
@@ -59,11 +58,17 @@ func (s *Systems) AddSystem(sys System) {
 	if sys, ok := sys.(UISystem); ok {
 		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddSystem.", sys))
 	}
+	if s.initialized {
+		panic("adding systems after model initialization is not implemented yet")
+	}
 	s.systems = append(s.systems, sys)
 }
 
 // AddUISystem adds an UI system to the model
 func (s *Systems) AddUISystem(sys UISystem) {
+	if s.initialized {
+		panic("adding systems after model initialization is not implemented yet")
+	}
 	s.uiSystems = append(s.uiSystems, sys)
 	if sys, ok := sys.(System); ok {
 		s.systems = append(s.systems, sys)
@@ -170,10 +175,7 @@ func (s *Systems) updateUISystems(updated bool) {
 					sys.UpdateUI(s.world)
 				}
 				for _, sys := range s.uiSystems {
-					win := sys.Window()
-					if win != nil {
-						win.Update()
-					}
+					sys.PostUpdateUI(s.world)
 				}
 			}
 		} else {
@@ -185,10 +187,7 @@ func (s *Systems) updateUISystems(updated bool) {
 					sys.UpdateUI(s.world)
 				}
 				for _, sys := range s.uiSystems {
-					win := sys.Window()
-					if win != nil {
-						win.Update()
-					}
+					sys.PostUpdateUI(s.world)
 				}
 			}
 		}

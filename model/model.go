@@ -3,10 +3,8 @@ package model
 import (
 	"time"
 
-	"golang.org/x/exp/rand"
-
-	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche/ecs"
+	"golang.org/x/exp/rand"
 )
 
 // Model is the top-level ecs entrypoint.
@@ -50,5 +48,5 @@ func (m *Model) Seed(seed ...uint64) {
 
 // Run runs a model
 func (m *Model) Run() {
-	pixelgl.Run(m.Systems.run)
+	m.Systems.run()
 }
