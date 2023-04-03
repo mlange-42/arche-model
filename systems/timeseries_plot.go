@@ -1,12 +1,14 @@
-package reporters
+package systems
 
 import (
+	"image/color"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche-model/model"
-	"github.com/mlange-42/arche-model/systems"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
+	"golang.org/x/image/colornames"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
@@ -14,13 +16,22 @@ import (
 	"gonum.org/v1/plot/vg/vgimg"
 )
 
+var defaultColors = []color.Color{
+	colornames.Blue,
+	colornames.Orange,
+	colornames.Green,
+	colornames.Purple,
+	colornames.Red,
+	colornames.Turquoise,
+}
+
 // TimeSeriesPlot reporter
 type TimeSeriesPlot struct {
-	Bounds         systems.Bounds
+	Bounds         Bounds
 	Observer       model.Observer
 	UpdateInterval int
 	DrawInterval   int
-	systems.GlFrame
+	GlFrame
 	drawer  timeSeriesDrawer
 	timeRes generic.Resource[model.Time]
 }
