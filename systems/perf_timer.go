@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mlange-42/arche-models/model"
+	"github.com/mlange-42/arche-model/model"
 )
 
 // PerfTimer system

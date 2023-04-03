@@ -1,4 +1,4 @@
-module github.com/mlange-42/arche-models
+module github.com/mlange-42/arche-model
 
 go 1.20
 

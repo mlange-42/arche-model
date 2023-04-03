@@ -1,6 +1,6 @@
 package systems
 
-import "github.com/mlange-42/arche-models/model"
+import "github.com/mlange-42/arche-model/model"
 
 // FixedTermination system
 type FixedTermination struct {

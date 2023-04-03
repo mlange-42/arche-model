@@ -3,7 +3,7 @@ package reporters
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche-models/model"
+	"github.com/mlange-42/arche-model/model"
 )
 
 // Print reporter

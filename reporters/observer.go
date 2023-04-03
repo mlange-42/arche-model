@@ -1,6 +1,6 @@
 package reporters
 
-import "github.com/mlange-42/arche-models/model"
+import "github.com/mlange-42/arche-model/model"
 
 // Observer interface
 type Observer interface {
