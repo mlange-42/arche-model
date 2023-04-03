@@ -25,14 +25,10 @@ type UISystem interface {
 
 // Systems manages and schedules ECS [System] and [UISystem] instances.
 type Systems struct {
-	world *ecs.World
-	// Frames per second for UI systems.
-	// Values <= 0 sync FPS with TPS.
-	Fps float64
-	// Ticks per second for normal systems.
-	// Values <= 0 mean as fast as possible.
-	Tps float64
+	Fps float64 // Frames per second for UI systems. Values <= 0 sync FPS with TPS.
+	Tps float64 // Ticks per second for normal systems. Values <= 0 mean as fast as possible.
 
+	world      *ecs.World
 	systems    []System
 	uiSystems  []UISystem
 	toRemove   []System
