@@ -1,19 +1,21 @@
 package reporters
 
-import "github.com/mlange-42/arche-model/model"
+import (
+	"github.com/mlange-42/arche/ecs"
+)
 
 // Observer interface
 type Observer interface {
-	Initialize(m *model.Model)
-	Update(m *model.Model)
-	Header(m *model.Model) []string
-	Values(m *model.Model) []float64
+	Initialize(w *ecs.World)
+	Update(w *ecs.World)
+	Header(w *ecs.World) []string
+	Values(w *ecs.World) []float64
 }
 
 // MatrixObserver interface
 type MatrixObserver interface {
-	Initialize(m *model.Model)
-	Update(m *model.Model)
-	Header(m *model.Model) []string
-	Values(m *model.Model) [][]float64
+	Initialize(w *ecs.World)
+	Update(w *ecs.World)
+	Header(w *ecs.World) []string
+	Values(w *ecs.World) [][]float64
 }

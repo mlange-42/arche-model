@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
 
@@ -18,12 +19,12 @@ type PerfTimer struct {
 }
 
 // Initialize the system
-func (s *PerfTimer) Initialize(m *model.Model) {
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+func (s *PerfTimer) Initialize(w *ecs.World) {
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *PerfTimer) Update(m *model.Model) {
+func (s *PerfTimer) Update(w *ecs.World) {
 	tm := s.timeRes.Get()
 
 	t := time.Now()
@@ -37,7 +38,7 @@ func (s *PerfTimer) Update(m *model.Model) {
 			fmt.Printf("%d updates, %0.2f us/update\n", s.UpdateInterval, usec)
 		}
 		if s.Stats {
-			fmt.Println(m.World.Stats().String())
+			fmt.Println(w.Stats().String())
 		}
 		s.step = 0
 		s.start = t
@@ -46,4 +47,4 @@ func (s *PerfTimer) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *PerfTimer) Finalize(m *model.Model) {}
+func (s *PerfTimer) Finalize(w *ecs.World) {}

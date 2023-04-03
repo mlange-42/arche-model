@@ -5,6 +5,7 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/systems"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
@@ -25,36 +26,36 @@ type TimeSeriesPlot struct {
 }
 
 // Initialize the system
-func (s *TimeSeriesPlot) Initialize(m *model.Model) {
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+func (s *TimeSeriesPlot) Initialize(w *ecs.World) {
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // InitializeUI the system
-func (s *TimeSeriesPlot) InitializeUI(m *model.Model) {
-	s.Observer.Initialize(m)
+func (s *TimeSeriesPlot) InitializeUI(w *ecs.World) {
+	s.Observer.Initialize(w)
 
 	s.drawer = timeSeriesDrawer{}
-	s.drawer.addSeries(s.Observer.Header(m))
+	s.drawer.addSeries(s.Observer.Header(w))
 
 	s.GlFrame.DrawInterval = s.DrawInterval
 	s.GlFrame.Bounds = s.Bounds
 	s.GlFrame.Add(&s.drawer)
-	s.GlFrame.InitializeUI(m)
+	s.GlFrame.InitializeUI(w)
 }
 
 // Update the system
-func (s *TimeSeriesPlot) Update(m *model.Model) {
+func (s *TimeSeriesPlot) Update(w *ecs.World) {
 	time := s.timeRes.Get()
 
 	if s.UpdateInterval > 1 && time.Tick%int64(s.UpdateInterval) != 0 {
 		return
 	}
-	s.Observer.Update(m)
-	s.drawer.append(float64(time.Tick), s.Observer.Values(m))
+	s.Observer.Update(w)
+	s.drawer.append(float64(time.Tick), s.Observer.Values(w))
 }
 
 // Finalize the system
-func (s *TimeSeriesPlot) Finalize(m *model.Model) {}
+func (s *TimeSeriesPlot) Finalize(w *ecs.World) {}
 
 type timeSeriesDrawer struct {
 	headers []string
@@ -74,7 +75,7 @@ func (s *timeSeriesDrawer) append(x float64, values []float64) {
 }
 
 // Initialize the system
-func (s *timeSeriesDrawer) Initialize(m *model.Model, w *pixelgl.Window) {
+func (s *timeSeriesDrawer) Initialize(w *ecs.World, win *pixelgl.Window) {
 	width := 100.0
 	c := vgimg.New(vg.Points(width), vg.Points(width))
 	img := c.Image()
@@ -82,9 +83,9 @@ func (s *timeSeriesDrawer) Initialize(m *model.Model, w *pixelgl.Window) {
 }
 
 // Draw the system
-func (s *timeSeriesDrawer) Draw(m *model.Model, w *pixelgl.Window) {
-	width := w.Canvas().Bounds().W()
-	height := w.Canvas().Bounds().H()
+func (s *timeSeriesDrawer) Draw(w *ecs.World, win *pixelgl.Window) {
+	width := win.Canvas().Bounds().W()
+	height := win.Canvas().Bounds().H()
 
 	c := vgimg.New(vg.Points(width*s.scale), vg.Points(height*s.scale))
 
@@ -115,5 +116,5 @@ func (s *timeSeriesDrawer) Draw(m *model.Model, w *pixelgl.Window) {
 	picture := pixel.PictureDataFromImage(img)
 
 	sprite := pixel.NewSprite(picture, picture.Bounds())
-	sprite.Draw(w, pixel.IM.Moved(pixel.V(picture.Rect.W()/2.0, picture.Rect.H()/2.0)))
+	sprite.Draw(win, pixel.IM.Moved(pixel.V(picture.Rect.W()/2.0, picture.Rect.H()/2.0)))
 }

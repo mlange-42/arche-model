@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
 
@@ -24,9 +25,9 @@ type SnapshotCSV struct {
 }
 
 // Initialize the system
-func (s *SnapshotCSV) Initialize(m *model.Model) {
-	s.Observer.Initialize(m)
-	s.header = s.Observer.Header(m)
+func (s *SnapshotCSV) Initialize(w *ecs.World) {
+	s.Observer.Initialize(w)
+	s.header = s.Observer.Header(w)
 
 	if s.Sep == "" {
 		s.Sep = ","
@@ -37,14 +38,14 @@ func (s *SnapshotCSV) Initialize(m *model.Model) {
 		panic(err)
 	}
 
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *SnapshotCSV) Update(m *model.Model) {
+func (s *SnapshotCSV) Update(w *ecs.World) {
 	time := s.timeRes.Get()
 
-	s.Observer.Update(m)
+	s.Observer.Update(w)
 	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
 		file, err := os.Create(fmt.Sprintf(s.FilePattern, time.Tick))
 		if err != nil {
@@ -62,7 +63,7 @@ func (s *SnapshotCSV) Update(m *model.Model) {
 			panic(err)
 		}
 
-		values := s.Observer.Values(m)
+		values := s.Observer.Values(w)
 		s.builder.Reset()
 		for _, row := range values {
 			for i, v := range row {
@@ -81,4 +82,4 @@ func (s *SnapshotCSV) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *SnapshotCSV) Finalize(m *model.Model) {}
+func (s *SnapshotCSV) Finalize(w *ecs.World) {}

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
 
@@ -25,10 +26,9 @@ type CSV struct {
 }
 
 // Initialize the system
-func (s *CSV) Initialize(m *model.Model) {
-	s.Observer.Initialize(m)
-	s.header = s.Observer.Header(m)
-
+func (s *CSV) Initialize(w *ecs.World) {
+	s.Observer.Initialize(w)
+	s.header = s.Observer.Header(w)
 	if s.Sep == "" {
 		s.Sep = ","
 	}
@@ -47,16 +47,16 @@ func (s *CSV) Initialize(m *model.Model) {
 		panic(err)
 	}
 
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *CSV) Update(m *model.Model) {
+func (s *CSV) Update(w *ecs.World) {
 	time := s.timeRes.Get()
 
-	s.Observer.Update(m)
+	s.Observer.Update(w)
 	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
-		values := s.Observer.Values(m)
+		values := s.Observer.Values(w)
 		s.builder.Reset()
 		fmt.Fprintf(&s.builder, "%d%s", time.Tick, s.Sep)
 		for i, v := range values {
@@ -73,7 +73,7 @@ func (s *CSV) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *CSV) Finalize(m *model.Model) {
+func (s *CSV) Finalize(w *ecs.World) {
 	if err := s.file.Close(); err != nil {
 		panic(err)
 	}

@@ -4,6 +4,7 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 	"golang.org/x/image/colornames"
 )
@@ -23,8 +24,8 @@ func B(x, y, w, h int) Bounds {
 
 // GlDrawer interface
 type GlDrawer interface {
-	Initialize(m *model.Model, w *pixelgl.Window)
-	Draw(m *model.Model, w *pixelgl.Window)
+	Initialize(w *ecs.World, win *pixelgl.Window)
+	Draw(w *ecs.World, win *pixelgl.Window)
 }
 
 // GlFrame provides an OpenGL window for drawing.
@@ -48,7 +49,7 @@ func (s *GlFrame) Add(d GlDrawer) {
 }
 
 // InitializeUI the system
-func (s *GlFrame) InitializeUI(m *model.Model) {
+func (s *GlFrame) InitializeUI(w *ecs.World) {
 	if s.Bounds.Width <= 0 {
 		s.Bounds.Width = 1024
 	}
@@ -67,13 +68,13 @@ func (s *GlFrame) InitializeUI(m *model.Model) {
 		panic(err)
 	}
 	for _, d := range s.drawers {
-		d.Initialize(m, s.window)
+		d.Initialize(w, s.window)
 	}
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // UpdateUI the system
-func (s *GlFrame) UpdateUI(m *model.Model) {
+func (s *GlFrame) UpdateUI(w *ecs.World) {
 	if s.window.Closed() {
 		time := s.timeRes.Get()
 		time.Finished = true
@@ -83,11 +84,11 @@ func (s *GlFrame) UpdateUI(m *model.Model) {
 		s.window.Clear(colornames.Black)
 
 		for _, d := range s.drawers {
-			d.Draw(m, s.window)
+			d.Draw(w, s.window)
 		}
 	}
 	s.step++
 }
 
 // FinalizeUI the system
-func (s *GlFrame) FinalizeUI(m *model.Model) {}
+func (s *GlFrame) FinalizeUI(w *ecs.World) {}

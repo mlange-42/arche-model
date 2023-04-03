@@ -2,6 +2,7 @@ package systems
 
 import (
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
 
@@ -12,12 +13,12 @@ type FixedTermination struct {
 }
 
 // Initialize the system
-func (s *FixedTermination) Initialize(m *model.Model) {
-	s.timeRes = generic.NewResource[model.Time](&m.World)
+func (s *FixedTermination) Initialize(w *ecs.World) {
+	s.timeRes = generic.NewResource[model.Time](w)
 }
 
 // Update the system
-func (s *FixedTermination) Update(m *model.Model) {
+func (s *FixedTermination) Update(w *ecs.World) {
 	time := s.timeRes.Get()
 
 	if time.Tick >= s.Steps {
@@ -26,4 +27,4 @@ func (s *FixedTermination) Update(m *model.Model) {
 }
 
 // Finalize the system
-func (s *FixedTermination) Finalize(m *model.Model) {}
+func (s *FixedTermination) Finalize(w *ecs.World) {}
