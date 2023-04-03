@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/generic"
 )
 
 // CSV reporter.
@@ -20,6 +21,7 @@ type CSV struct {
 	file           *os.File
 	header         []string
 	builder        strings.Builder
+	timeRes        generic.Resource[model.Time]
 }
 
 // Initialize the system
@@ -44,15 +46,19 @@ func (s *CSV) Initialize(m *model.Model) {
 	if err != nil {
 		panic(err)
 	}
+
+	s.timeRes = generic.NewResource[model.Time](&m.World)
 }
 
 // Update the system
 func (s *CSV) Update(m *model.Model) {
+	time := s.timeRes.Get()
+
 	s.Observer.Update(m)
-	if s.UpdateInterval == 0 || m.Step%int64(s.UpdateInterval) == 0 {
+	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
 		values := s.Observer.Values(m)
 		s.builder.Reset()
-		fmt.Fprintf(&s.builder, "%d%s", m.Step, s.Sep)
+		fmt.Fprintf(&s.builder, "%d%s", time.Tick, s.Sep)
 		for i, v := range values {
 			fmt.Fprintf(&s.builder, "%f", v)
 			if i < len(values)-1 {

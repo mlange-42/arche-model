@@ -6,3 +6,9 @@ import "golang.org/x/exp/rand"
 type Rand struct {
 	rand.Source
 }
+
+// Time is a resource holding the model's time step.
+type Time struct {
+	Tick     int64
+	Finished bool
+}

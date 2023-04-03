@@ -47,8 +47,6 @@ type systems struct {
 	lastDraw   time.Time
 	lastUpdate time.Time
 
-	Step        int64
-	Finished    bool
 	initialized bool
 }
 
@@ -132,7 +130,7 @@ func (s *systems) update() {
 	s.removeSystems()
 
 	if update {
-		s.Step++
+		s.model.time.Tick++
 	}
 }
 
@@ -206,8 +204,8 @@ func (s *systems) run() {
 		s.initialize()
 	}
 
-	s.Step = 0
-	for !s.Finished {
+	s.model.time.Tick = 0
+	for !s.model.time.Finished {
 		s.update()
 	}
 

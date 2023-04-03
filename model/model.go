@@ -14,6 +14,7 @@ type Model struct {
 	ecs.World
 	systems
 	rand Rand
+	time Time
 }
 
 // New creates a new model.
@@ -27,6 +28,8 @@ func New(config ...ecs.Config) *Model {
 
 	mod.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
 	ecs.AddResource(&mod.World, &mod.rand)
+	mod.time = Time{}
+	ecs.AddResource(&mod.World, &mod.time)
 
 	return &mod
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/systems"
+	"github.com/mlange-42/arche/generic"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/vg"
@@ -19,11 +20,14 @@ type TimeSeriesPlot struct {
 	UpdateInterval int
 	DrawInterval   int
 	systems.GlFrame
-	drawer timeSeriesDrawer
+	drawer  timeSeriesDrawer
+	timeRes generic.Resource[model.Time]
 }
 
 // Initialize the system
-func (s *TimeSeriesPlot) Initialize(m *model.Model) {}
+func (s *TimeSeriesPlot) Initialize(m *model.Model) {
+	s.timeRes = generic.NewResource[model.Time](&m.World)
+}
 
 // InitializeUI the system
 func (s *TimeSeriesPlot) InitializeUI(m *model.Model) {
@@ -40,11 +44,13 @@ func (s *TimeSeriesPlot) InitializeUI(m *model.Model) {
 
 // Update the system
 func (s *TimeSeriesPlot) Update(m *model.Model) {
-	if s.UpdateInterval > 1 && m.Step%int64(s.UpdateInterval) != 0 {
+	time := s.timeRes.Get()
+
+	if s.UpdateInterval > 1 && time.Tick%int64(s.UpdateInterval) != 0 {
 		return
 	}
 	s.Observer.Update(m)
-	s.drawer.append(float64(m.Step), s.Observer.Values(m))
+	s.drawer.append(float64(time.Tick), s.Observer.Values(m))
 }
 
 // Finalize the system

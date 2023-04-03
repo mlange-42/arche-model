@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche/generic"
 )
 
 // PerfTimer system
@@ -13,19 +14,24 @@ type PerfTimer struct {
 	Stats          bool
 	start          time.Time
 	step           int
+	timeRes        generic.Resource[model.Time]
 }
 
 // Initialize the system
-func (s *PerfTimer) Initialize(m *model.Model) {}
+func (s *PerfTimer) Initialize(m *model.Model) {
+	s.timeRes = generic.NewResource[model.Time](&m.World)
+}
 
 // Update the system
 func (s *PerfTimer) Update(m *model.Model) {
+	tm := s.timeRes.Get()
+
 	t := time.Now()
-	if m.Step == 0 {
+	if tm.Tick == 0 {
 		s.start = t
 	}
-	if m.Step%int64(s.UpdateInterval) == 0 {
-		if m.Step > 0 {
+	if tm.Tick%int64(s.UpdateInterval) == 0 {
+		if tm.Tick > 0 {
 			dur := t.Sub(s.start)
 			usec := float64(dur.Microseconds()) / float64(s.step)
 			fmt.Printf("%d updates, %0.2f us/update\n", s.UpdateInterval, usec)
