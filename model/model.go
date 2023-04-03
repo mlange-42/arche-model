@@ -46,6 +46,5 @@ func (m *Model) Seed(seed ...uint64) {
 
 // Run runs a model
 func (m *Model) Run() {
-	m.systems.model = m
 	pixelgl.Run(m.systems.run)
 }
