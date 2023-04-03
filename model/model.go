@@ -1,8 +1,9 @@
 package model
 
 import (
-	"math/rand"
 	"time"
+
+	"golang.org/x/exp/rand"
 
 	"github.com/faiface/pixel/pixelgl"
 	"github.com/mlange-42/arche/ecs"
@@ -24,7 +25,7 @@ func New(config ...ecs.Config) *Model {
 	mod.Tps = 0
 	mod.systems.model = &mod
 
-	mod.rand = Rand{rand.NewSource(time.Now().UnixNano())}
+	mod.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
 	ecs.AddResource(&mod.World, &mod.rand)
 
 	return &mod
@@ -32,10 +33,10 @@ func New(config ...ecs.Config) *Model {
 
 // Seed sets the random seed of the model.
 // Call without an argument to seed from the current time.
-func (m *Model) Seed(seed ...int64) {
+func (m *Model) Seed(seed ...uint64) {
 	switch len(seed) {
 	case 0:
-		m.rand.Seed(time.Now().UnixNano())
+		m.rand.Seed(uint64(time.Now().UnixNano()))
 	case 1:
 		m.rand.Seed(seed[0])
 	default:
