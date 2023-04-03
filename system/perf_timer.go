@@ -1,4 +1,4 @@
-package systems
+package system
 
 import (
 	"fmt"
@@ -9,10 +9,10 @@ import (
 	"github.com/mlange-42/arche/generic"
 )
 
-// PerfTimer system
+// PerfTimer system for printing elapsed time per model step, and optional world statistics.
 type PerfTimer struct {
-	UpdateInterval int
-	Stats          bool
+	UpdateInterval int  // Update/print interval in model ticks.
+	Stats          bool // Whether to print world stats.
 	start          time.Time
 	step           int
 	timeRes        generic.Resource[model.Time]

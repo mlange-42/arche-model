@@ -7,12 +7,15 @@ import (
 	"golang.org/x/exp/rand"
 )
 
-// Model is the top-level ecs entrypoint.
+// Model is the top-level ECS entrypoint.
+//
+// Model provides access to the ECS world, and manages the scheduling of [System] and [UISystem] instances.
+// The [Systems] scheduler, model [Time] and a central [Rand] PRNG source can be accessed by systems as resources.
 type Model struct {
-	ecs.World
-	Systems
-	rand Rand
-	time Time
+	ecs.World // The ECS world
+	Systems   // Systems manager and scheduler
+	rand      Rand
+	time      Time
 }
 
 // New creates a new model.
@@ -35,6 +38,8 @@ func New(config ...ecs.Config) *Model {
 
 // Seed sets the random seed of the model.
 // Call without an argument to seed from the current time.
+//
+// Systems should always use the [Rand] resource for PRNGs.
 func (m *Model) Seed(seed ...uint64) {
 	switch len(seed) {
 	case 0:
@@ -46,7 +51,7 @@ func (m *Model) Seed(seed ...uint64) {
 	}
 }
 
-// Run runs a model
+// Run runs the model.
 func (m *Model) Run() {
 	m.Systems.run()
 }

@@ -1,4 +1,4 @@
-package systems
+package reporter
 
 import (
 	"fmt"
@@ -8,10 +8,10 @@ import (
 	"github.com/mlange-42/arche/generic"
 )
 
-// Print reporter
+// Print reporter to print a table row per time step.
 type Print struct {
-	UpdateInterval int
-	Observer       model.Observer
+	Observer       model.Observer // Observer to get data from.
+	UpdateInterval int            // Update/print interval in model ticks.
 	header         []string
 	timeRes        generic.Resource[model.Time]
 }
