@@ -7,6 +7,17 @@
 
 An example and template for building simulation models using the [Arche](https://github.com/mlange-42/arche) Entity Component System.
 
+## Installation
+
+```
+go get github.com/mlange-42/arche-model
+```
+
+For the OpenGL-based graphics, the requirements of [go-gl/gl](https://github.com/go-gl/gl) and [go-gl/glfw](https://github.com/go-gl/glfw) apply. For Ubuntu/Debian-based systems, these are:
+
+- `libgl1-mesa-dev`
+- `xorg-dev`
+
 ## License
 
 This project is distributed under the [MIT licence](./LICENSE).
