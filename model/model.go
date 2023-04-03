@@ -12,10 +12,10 @@ import (
 // Model provides access to the ECS world, and manages the scheduling of [System] and [UISystem] instances.
 // The [Systems] scheduler, model [Time] and a central [Rand] PRNG source can be accessed by systems as resources.
 type Model struct {
-	ecs.World // The ECS world
-	Systems   // Systems manager and scheduler
-	rand      Rand
-	time      Time
+	Systems           // Systems manager and scheduler
+	World   ecs.World // The ECS world
+	rand    Rand
+	time    Time
 }
 
 // New creates a new model.
