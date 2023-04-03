@@ -133,7 +133,7 @@ func (s *Systems) initialize() {
 	s.initialized = true
 }
 
-// update all systems
+// Update all systems.
 func (s *Systems) update() {
 	update := s.updateSystems()
 	s.updateUISystems(update)
@@ -143,9 +143,31 @@ func (s *Systems) update() {
 	if update {
 		time := s.timeRes.Get()
 		time.Tick++
+	} else {
+		s.wait()
 	}
 }
 
+// Calculates and waits the time until the next update of UI update.
+func (s *Systems) wait() {
+	t := time.Now()
+	nextUpdate := t
+	if s.Tps > 0 {
+		nextUpdate = s.lastUpdate.Add(time.Second / time.Duration(s.Tps))
+	}
+	if s.Fps > 0 {
+		nextUpdate2 := s.lastDraw.Add(time.Second / time.Duration(s.Fps))
+		if nextUpdate2.Before(nextUpdate) {
+			nextUpdate = nextUpdate2
+		}
+	}
+	wait := nextUpdate.Sub(t)
+	if wait > 0 {
+		time.Sleep(wait)
+	}
+}
+
+// Update normal systems.
 func (s *Systems) updateSystems() bool {
 	update := false
 	if s.Tps <= 0 {
