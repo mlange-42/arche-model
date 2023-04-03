@@ -248,3 +248,17 @@ func (s *Systems) run() {
 
 	s.finalize()
 }
+
+// Removes all systems.
+func (s *Systems) reset() {
+	s.systems = []System{}
+	s.uiSystems = []UISystem{}
+	s.toRemove = []System{}
+	s.uiToRemove = []UISystem{}
+
+	s.lastDraw = time.Time{}
+	s.lastUpdate = time.Time{}
+
+	s.initialized = false
+	s.timeRes = generic.Resource[Time]{}
+}

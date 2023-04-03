@@ -55,3 +55,18 @@ func (m *Model) Seed(seed ...uint64) {
 func (m *Model) Run() {
 	m.Systems.run()
 }
+
+// Reset resets the world and removes all systems.
+func (m *Model) Reset() {
+	m.World.Reset()
+	m.Systems.reset()
+
+	m.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
+	ecs.AddResource(&m.World, &m.rand)
+	m.time = Time{}
+	ecs.AddResource(&m.World, &m.time)
+	ecs.AddResource(&m.World, &m.Systems)
+
+	m.time.Tick = 0
+	m.time.Finished = false
+}

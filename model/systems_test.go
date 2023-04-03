@@ -11,31 +11,35 @@ import (
 
 func TestSystems(t *testing.T) {
 	m := model.New()
-	m.Seed()
-	m.Seed(123)
-	m.Tps = 120
-	m.Fps = 60
+	for i := 0; i < 3; i++ {
+		m.Reset()
 
-	termSys := system.FixedTermination{
-		Steps: 1000,
+		m.Seed()
+		m.Seed(123)
+		m.Tps = 120
+		m.Fps = 60
+
+		termSys := system.FixedTermination{
+			Steps: 1000,
+		}
+		uiSys := uiSystem{}
+
+		m.AddSystem(&termSys)
+		m.AddSystem(&system.FixedTermination{
+			Steps: 100,
+		})
+		m.AddUISystem(&uiSys)
+
+		m.AddSystem(&removerSystem{
+			Remove:   []model.System{&termSys},
+			RemoveUI: []model.UISystem{&uiSys},
+		})
+
+		m.Run()
+
+		assert.Panics(t, func() { m.AddSystem(&termSys) })
+		assert.Panics(t, func() { m.AddUISystem(&uiSys) })
 	}
-	uiSys := uiSystem{}
-
-	m.AddSystem(&termSys)
-	m.AddSystem(&system.FixedTermination{
-		Steps: 100,
-	})
-	m.AddUISystem(&uiSys)
-
-	m.AddSystem(&removerSystem{
-		Remove:   []model.System{&termSys},
-		RemoveUI: []model.UISystem{&uiSys},
-	})
-
-	m.Run()
-
-	assert.Panics(t, func() { m.AddSystem(&termSys) })
-	assert.Panics(t, func() { m.AddUISystem(&uiSys) })
 }
 
 type uiSystem struct{}

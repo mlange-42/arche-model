@@ -9,11 +9,15 @@ import (
 
 func TestModel(t *testing.T) {
 	m := model.New()
-	m.Seed(123)
 
-	m.AddSystem(&system.FixedTermination{
-		Steps: 10,
-	})
+	for i := 0; i < 3; i++ {
+		m.Reset()
+		m.Seed(123)
 
-	m.Run()
+		m.AddSystem(&system.FixedTermination{
+			Steps: 10,
+		})
+
+		m.Run()
+	}
 }
