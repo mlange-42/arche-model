@@ -38,6 +38,7 @@ type Systems struct {
 	lastUpdate time.Time
 
 	initialized bool
+	locked      bool
 
 	timeRes generic.Resource[Time]
 }
@@ -75,6 +76,9 @@ func (s *Systems) AddUISystem(sys UISystem) {
 // However, this will take effect only after the end of the full model step.
 func (s *Systems) RemoveSystem(sys System) {
 	s.toRemove = append(s.toRemove, sys)
+	if !s.locked {
+		s.removeSystems()
+	}
 }
 
 // RemoveUISystem removes an UI system from the model.
@@ -83,6 +87,9 @@ func (s *Systems) RemoveSystem(sys System) {
 // However, this will take effect only after the end of the full model step.
 func (s *Systems) RemoveUISystem(sys UISystem) {
 	s.uiToRemove = append(s.uiToRemove, sys)
+	if !s.locked {
+		s.removeSystems()
+	}
 }
 
 // Removes systems that were removed during the model step.
@@ -96,7 +103,7 @@ func (s *Systems) removeSystems() {
 			}
 		}
 		if idx < 0 {
-			panic("System not in the model")
+			panic(fmt.Sprintf("can't remove system %T: not in the model", sys))
 		}
 		s.systems[idx].Finalize(s.world)
 		s.systems = append(s.systems[:idx], s.systems[idx+1:]...)
@@ -110,7 +117,7 @@ func (s *Systems) removeSystems() {
 			}
 		}
 		if idx < 0 {
-			panic("System not in the model")
+			panic(fmt.Sprintf("can't remove UI system %T: not in the model", sys))
 		}
 		s.uiSystems[idx].FinalizeUI(s.world)
 		s.uiSystems = append(s.uiSystems[:idx], s.uiSystems[idx+1:]...)
@@ -126,20 +133,24 @@ func (s *Systems) initialize() {
 	if s.initialized {
 		panic("model is already initialized")
 	}
+	s.locked = true
 	for _, sys := range s.systems {
 		sys.Initialize(s.world)
 	}
 	for _, sys := range s.uiSystems {
 		sys.InitializeUI(s.world)
 	}
+	s.locked = false
 	s.removeSystems()
 	s.initialized = true
 }
 
 // Update all systems.
 func (s *Systems) update() {
+	s.locked = true
 	update := s.updateSystems()
 	s.updateUISystems(update)
+	s.locked = false
 
 	s.removeSystems()
 
@@ -222,12 +233,14 @@ func (s *Systems) updateUISystems(updated bool) {
 
 // Finalize all systems.
 func (s *Systems) finalize() {
+	s.locked = true
 	for _, sys := range s.systems {
 		sys.Finalize(s.world)
 	}
 	for _, sys := range s.uiSystems {
 		sys.FinalizeUI(s.world)
 	}
+	s.locked = false
 	s.removeSystems()
 }
 

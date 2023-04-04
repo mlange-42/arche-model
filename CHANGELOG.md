@@ -6,6 +6,14 @@
 
 * Adds a system `CallbackTermination` to end the simulation based on a callback (#13)
 
+### Bugfixes
+
+* Fix check when removing a system that is not in `Systems` (#15)
+
+### Other
+
+* Systems are removed immediately when `Systems.RemoveSystem` is called outside of a loop over systems (#15)
+
 ### Documentation
 
 * Improves examples with inline comments (#9)
