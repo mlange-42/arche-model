@@ -89,8 +89,9 @@ func (s *Systems) RemoveUISystem(sys UISystem) {
 func (s *Systems) removeSystems() {
 	for _, sys := range s.toRemove {
 		idx := -1
-		for idx = 0; idx < len(s.systems); idx++ {
-			if sys == s.systems[idx] {
+		for i := 0; i < len(s.systems); i++ {
+			if sys == s.systems[i] {
+				idx = i
 				break
 			}
 		}
@@ -102,8 +103,9 @@ func (s *Systems) removeSystems() {
 	}
 	for _, sys := range s.uiToRemove {
 		idx := -1
-		for idx = 0; idx < len(s.uiSystems); idx++ {
-			if sys == s.uiSystems[idx] {
+		for i := 0; i < len(s.uiSystems); i++ {
+			if sys == s.uiSystems[i] {
+				idx = i
 				break
 			}
 		}
