@@ -5,7 +5,8 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/arche-model)
 [![MIT license](https://img.shields.io/github/license/mlange-42/arche-model)](https://github.com/mlange-42/arche-model/blob/main/LICENSE)
 
-*Arche Model* is a wrapper around the [Arche](https://github.com/mlange-42/arche) Entity Component System.
+*Arche Model* provides a wrapper around the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS),
+and some general-purpose systems.
 It's purpose is to get started with prototyping and developing simulation models immediately.
 
 ## Installation
