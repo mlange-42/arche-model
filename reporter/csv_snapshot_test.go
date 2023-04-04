@@ -8,8 +8,10 @@ import (
 )
 
 func ExampleSnapshotCSV() {
+	// Create a new model.
 	m := model.New()
 
+	// Add a SnapshotCSV reporter with an Observer.
 	m.AddSystem(&reporter.SnapshotCSV{
 		Observer:       &ExampleSnapshotObserver{},
 		FilePattern:    "../out/test-%06d.csv",
@@ -17,12 +19,14 @@ func ExampleSnapshotCSV() {
 		UpdateInterval: 10,
 	})
 
+	// Add a termination system that ends the simulation.
 	m.AddSystem(&system.FixedTermination{Steps: 100})
 
+	// Run the simulation.
 	m.Run()
-	// Output:
 }
 
+// ExampleSnapshotObserver to generate some simple tables.
 type ExampleSnapshotObserver struct{}
 
 func (o *ExampleSnapshotObserver) Initialize(w *ecs.World) {}

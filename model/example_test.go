@@ -6,13 +6,17 @@ import (
 )
 
 func Example() {
+	// Create a new model.
 	m := model.New()
+	// Seed the model's PRNG.
 	m.Seed(123)
 
+	// Add systems.
 	m.AddSystem(&system.FixedTermination{
 		Steps: 100,
 	})
 
+	// Run the simulation.
 	m.Run()
 	// Output:
 }

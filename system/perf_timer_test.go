@@ -11,7 +11,8 @@ func ExamplePerfTimer() {
 	m.AddSystem(&system.PerfTimer{UpdateInterval: 10})
 	m.AddSystem(&system.FixedTermination{Steps: 30})
 
-	// m.Run()
+	// Uncomment the next line.
 
+	// m.Run()
 	// Output:
 }

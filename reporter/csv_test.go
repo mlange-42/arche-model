@@ -8,8 +8,10 @@ import (
 )
 
 func ExampleCSV() {
+	// Create a new model.
 	m := model.New()
 
+	// Add a CSV reporter with an Observer.
 	m.AddSystem(&reporter.CSV{
 		Observer:       &ExampleObserver{},
 		File:           "../out/test.csv",
@@ -17,12 +19,14 @@ func ExampleCSV() {
 		UpdateInterval: 10,
 	})
 
+	// Add a termination system that ends the simulation.
 	m.AddSystem(&system.FixedTermination{Steps: 100})
 
+	// Run the simulation.
 	m.Run()
-	// Output:
 }
 
+// ExampleObserver to generate some simple time series.
 type ExampleObserver struct{}
 
 func (o *ExampleObserver) Initialize(w *ecs.World) {}
