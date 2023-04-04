@@ -7,15 +7,19 @@ import (
 )
 
 func ExamplePrint() {
+	// Create a new model.
 	m := model.New()
 
+	// Add a Print reporter with an Observer.
 	m.AddSystem(&reporter.Print{
 		Observer:       &ExampleObserver{},
 		UpdateInterval: 10,
 	})
 
+	// Add a termination system that ends the simulation.
 	m.AddSystem(&system.FixedTermination{Steps: 20})
 
+	// Run the simulation.
 	m.Run()
 	// Output:
 	// [A B C]
