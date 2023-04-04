@@ -2,6 +2,10 @@
 
 ## [[v0.0.2]](https://github.com/mlange-42/arche/compare/v0.0.1...v0.0.2)
 
+### Features
+
+* Adds a system `CallbackTermination` to end the simulation based on a callback (#13)
+
 ### Documentation
 
 * Improves examples with inline comments (#9)
