@@ -17,11 +17,20 @@ func ExampleRand() {
 	// Output:
 }
 
-func ExampleTime() {
+func ExampleTick() {
 	m := model.New()
 
-	time := ecs.GetResource[model.Time](&m.World)
+	tick := ecs.GetResource[model.Tick](&m.World)
 
-	fmt.Println(time.Tick)
+	fmt.Println(tick.Tick)
 	// Output: 0
+}
+
+func ExampleTermination() {
+	m := model.New()
+
+	term := ecs.GetResource[model.Termination](&m.World)
+
+	fmt.Println(term.Terminate)
+	// Output: false
 }

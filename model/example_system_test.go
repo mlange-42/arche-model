@@ -11,12 +11,12 @@ import (
 
 // TestSystem is an example for implementing [System].
 type TestSystem struct {
-	timeRes generic.Resource[model.Time]
+	timeRes generic.Resource[model.Tick]
 }
 
 // Initialize the system.
 func (s *TestSystem) Initialize(w *ecs.World) {
-	s.timeRes = generic.NewResource[model.Time](w)
+	s.timeRes = generic.NewResource[model.Tick](w)
 }
 
 // Update the system.

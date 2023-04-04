@@ -10,12 +10,13 @@ import (
 // Model is the top-level ECS entrypoint.
 //
 // Model provides access to the ECS world, and manages the scheduling of [System] and [UISystem] instances.
-// The [Systems] scheduler, model [Time] and a central [Rand] PRNG source can be accessed by systems as resources.
+// The [Systems] scheduler, the model [Tick], [Termination] and a central [Rand] PRNG source can be accessed by systems as resources.
 type Model struct {
-	Systems           // Systems manager and scheduler
-	World   ecs.World // The ECS world
-	rand    Rand
-	time    Time
+	Systems             // Systems manager and scheduler
+	World     ecs.World // The ECS world
+	rand      Rand
+	time      Tick
+	terminate Termination
 }
 
 // New creates a new model.
@@ -29,8 +30,11 @@ func New(config ...ecs.Config) *Model {
 
 	mod.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
 	ecs.AddResource(&mod.World, &mod.rand)
-	mod.time = Time{}
+	mod.time = Tick{}
 	ecs.AddResource(&mod.World, &mod.time)
+	mod.terminate = Termination{}
+	ecs.AddResource(&mod.World, &mod.terminate)
+
 	ecs.AddResource(&mod.World, &mod.Systems)
 
 	return &mod
@@ -63,10 +67,10 @@ func (m *Model) Reset() {
 
 	m.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
 	ecs.AddResource(&m.World, &m.rand)
-	m.time = Time{}
+	m.time = Tick{}
 	ecs.AddResource(&m.World, &m.time)
-	ecs.AddResource(&m.World, &m.Systems)
+	m.terminate = Termination{}
+	ecs.AddResource(&m.World, &m.terminate)
 
-	m.time.Tick = 0
-	m.time.Finished = false
+	ecs.AddResource(&m.World, &m.Systems)
 }

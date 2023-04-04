@@ -40,7 +40,8 @@ type Systems struct {
 	initialized bool
 	locked      bool
 
-	timeRes generic.Resource[Time]
+	tickRes generic.Resource[Tick]
+	termRes generic.Resource[Termination]
 }
 
 // AddSystem adds a [System] to the model.
@@ -128,7 +129,8 @@ func (s *Systems) removeSystems() {
 
 // Initialize all systems.
 func (s *Systems) initialize() {
-	s.timeRes = generic.NewResource[Time](s.world)
+	s.tickRes = generic.NewResource[Tick](s.world)
+	s.termRes = generic.NewResource[Termination](s.world)
 
 	if s.initialized {
 		panic("model is already initialized")
@@ -155,7 +157,7 @@ func (s *Systems) update() {
 	s.removeSystems()
 
 	if update {
-		time := s.timeRes.Get()
+		time := s.tickRes.Get()
 		time.Tick++
 	} else {
 		s.wait()
@@ -250,10 +252,11 @@ func (s *Systems) run() {
 		s.initialize()
 	}
 
-	time := s.timeRes.Get()
+	time := s.tickRes.Get()
 	time.Tick = 0
+	terminate := s.termRes.Get()
 
-	for !time.Finished {
+	for !terminate.Terminate {
 		s.update()
 	}
 
@@ -271,5 +274,5 @@ func (s *Systems) reset() {
 	s.lastUpdate = time.Time{}
 
 	s.initialized = false
-	s.timeRes = generic.Resource[Time]{}
+	s.tickRes = generic.Resource[Tick]{}
 }

@@ -11,12 +11,12 @@ import (
 
 // TestUISystem is an example for implementing [UISystem].
 type TestUISystem struct {
-	timeRes generic.Resource[model.Time]
+	timeRes generic.Resource[model.Tick]
 }
 
 // Initialize the system.
 func (s *TestUISystem) InitializeUI(w *ecs.World) {
-	s.timeRes = generic.NewResource[model.Time](w)
+	s.timeRes = generic.NewResource[model.Tick](w)
 }
 
 // Update the system.
