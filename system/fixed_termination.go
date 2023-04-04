@@ -1,7 +1,7 @@
 package system
 
 import (
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
@@ -13,13 +13,13 @@ import (
 // Expects a resource of type [model.Termination].
 type FixedTermination struct {
 	Steps   int64 // Number of simulation ticks to run.
-	termRes generic.Resource[model.Termination]
+	termRes generic.Resource[resource.Termination]
 	step    int64
 }
 
 // Initialize the system
 func (s *FixedTermination) Initialize(w *ecs.World) {
-	s.termRes = generic.NewResource[model.Termination](w)
+	s.termRes = generic.NewResource[resource.Termination](w)
 	s.step = 0
 }
 

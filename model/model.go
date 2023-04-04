@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"golang.org/x/exp/rand"
 )
@@ -14,9 +15,9 @@ import (
 type Model struct {
 	Systems             // Systems manager and scheduler
 	World     ecs.World // The ECS world
-	rand      Rand
-	time      Tick
-	terminate Termination
+	rand      resource.Rand
+	time      resource.Tick
+	terminate resource.Termination
 }
 
 // New creates a new model.
@@ -28,11 +29,13 @@ func New(config ...ecs.Config) *Model {
 	mod.Tps = 0
 	mod.Systems.world = &mod.World
 
-	mod.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
+	mod.rand = resource.Rand{
+		Source: rand.NewSource(uint64(time.Now().UnixNano())),
+	}
 	ecs.AddResource(&mod.World, &mod.rand)
-	mod.time = Tick{}
+	mod.time = resource.Tick{}
 	ecs.AddResource(&mod.World, &mod.time)
-	mod.terminate = Termination{}
+	mod.terminate = resource.Termination{}
 	ecs.AddResource(&mod.World, &mod.terminate)
 
 	ecs.AddResource(&mod.World, &mod.Systems)
@@ -65,11 +68,13 @@ func (m *Model) Reset() {
 	m.World.Reset()
 	m.Systems.reset()
 
-	m.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
+	m.rand = resource.Rand{
+		Source: rand.NewSource(uint64(time.Now().UnixNano())),
+	}
 	ecs.AddResource(&m.World, &m.rand)
-	m.time = Tick{}
+	m.time = resource.Tick{}
 	ecs.AddResource(&m.World, &m.time)
-	m.terminate = Termination{}
+	m.terminate = resource.Termination{}
 	ecs.AddResource(&m.World, &m.terminate)
 
 	ecs.AddResource(&m.World, &m.Systems)

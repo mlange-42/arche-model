@@ -1,9 +1,10 @@
-package model_test
+package resource_test
 
 import (
 	"fmt"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"golang.org/x/exp/rand"
 )
@@ -11,7 +12,7 @@ import (
 func ExampleRand() {
 	m := model.New()
 
-	src := ecs.GetResource[model.Rand](&m.World)
+	src := ecs.GetResource[resource.Rand](&m.World)
 	rng := rand.New(src.Source)
 	_ = rng.NormFloat64()
 	// Output:
@@ -20,7 +21,7 @@ func ExampleRand() {
 func ExampleTick() {
 	m := model.New()
 
-	tick := ecs.GetResource[model.Tick](&m.World)
+	tick := ecs.GetResource[resource.Tick](&m.World)
 
 	fmt.Println(tick.Tick)
 	// Output: 0
@@ -29,7 +30,7 @@ func ExampleTick() {
 func ExampleTermination() {
 	m := model.New()
 
-	term := ecs.GetResource[model.Termination](&m.World)
+	term := ecs.GetResource[resource.Termination](&m.World)
 
 	fmt.Println(term.Terminate)
 	// Output: false

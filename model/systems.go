@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
 )
@@ -40,8 +41,8 @@ type Systems struct {
 	initialized bool
 	locked      bool
 
-	tickRes generic.Resource[Tick]
-	termRes generic.Resource[Termination]
+	tickRes generic.Resource[resource.Tick]
+	termRes generic.Resource[resource.Termination]
 }
 
 // AddSystem adds a [System] to the model.
@@ -129,8 +130,8 @@ func (s *Systems) removeSystems() {
 
 // Initialize all systems.
 func (s *Systems) initialize() {
-	s.tickRes = generic.NewResource[Tick](s.world)
-	s.termRes = generic.NewResource[Termination](s.world)
+	s.tickRes = generic.NewResource[resource.Tick](s.world)
+	s.termRes = generic.NewResource[resource.Termination](s.world)
 
 	if s.initialized {
 		panic("model is already initialized")
@@ -274,5 +275,5 @@ func (s *Systems) reset() {
 	s.lastUpdate = time.Time{}
 
 	s.initialized = false
-	s.tickRes = generic.Resource[Tick]{}
+	s.tickRes = generic.Resource[resource.Tick]{}
 }

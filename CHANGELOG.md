@@ -4,6 +4,7 @@
 
 ### Breaking changes
 
+* All resources moved to package `resource` (#16)
 * Resource `Time` is now split into `Tick` and `Termination` (#16)
 
 ### Features

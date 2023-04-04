@@ -1,4 +1,4 @@
-package model
+package resource
 
 import "golang.org/x/exp/rand"
 

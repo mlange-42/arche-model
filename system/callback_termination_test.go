@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,7 @@ func TestCallbackTermination(t *testing.T) {
 
 	m.Run()
 
-	time := ecs.GetResource[model.Tick](&m.World)
+	time := ecs.GetResource[resource.Tick](&m.World)
 	assert.Equal(t, 100, int(time.Tick))
 }
 
