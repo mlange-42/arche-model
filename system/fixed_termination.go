@@ -23,7 +23,7 @@ func (s *FixedTermination) Initialize(w *ecs.World) {
 func (s *FixedTermination) Update(w *ecs.World) {
 	time := s.timeRes.Get()
 
-	if time.Tick >= s.Steps {
+	if time.Tick+1 >= s.Steps {
 		time.Finished = true
 	}
 }

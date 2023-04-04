@@ -12,10 +12,10 @@ import (
 // Model provides access to the ECS world, and manages the scheduling of [System] and [UISystem] instances.
 // The [Systems] scheduler, model [Time] and a central [Rand] PRNG source can be accessed by systems as resources.
 type Model struct {
-	ecs.World // The ECS world
-	Systems   // Systems manager and scheduler
-	rand      Rand
-	time      Time
+	Systems           // Systems manager and scheduler
+	World   ecs.World // The ECS world
+	rand    Rand
+	time    Time
 }
 
 // New creates a new model.
@@ -54,4 +54,19 @@ func (m *Model) Seed(seed ...uint64) {
 // Run runs the model.
 func (m *Model) Run() {
 	m.Systems.run()
+}
+
+// Reset resets the world and removes all systems.
+func (m *Model) Reset() {
+	m.World.Reset()
+	m.Systems.reset()
+
+	m.rand = Rand{rand.NewSource(uint64(time.Now().UnixNano()))}
+	ecs.AddResource(&m.World, &m.rand)
+	m.time = Time{}
+	ecs.AddResource(&m.World, &m.time)
+	ecs.AddResource(&m.World, &m.Systems)
+
+	m.time.Tick = 0
+	m.time.Finished = false
 }
