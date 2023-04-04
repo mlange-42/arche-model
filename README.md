@@ -15,6 +15,12 @@ It's purpose is to get started with prototyping and developing simulation models
 go get github.com/mlange-42/arche-model
 ```
 
+## Usage
+
+See the [API docs](https://pkg.go.dev/github.com/mlange-42/arche-model) for details and examples.
+
+[![Go Reference](https://pkg.go.dev/badge/github.com/mlange-42/arche-model.svg)](https://pkg.go.dev/github.com/mlange-42/arche-model)
+
 ## License
 
 This project is distributed under the [MIT licence](./LICENSE).
