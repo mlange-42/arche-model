@@ -23,12 +23,16 @@ func TestSystems(t *testing.T) {
 			Steps: 1000,
 		}
 		uiSys := uiSystem{}
+		dualSys := dualSystem{}
 
 		m.AddSystem(&termSys)
 		m.AddSystem(&system.FixedTermination{
-			Steps: 100,
+			Steps: 10,
 		})
 		m.AddUISystem(&uiSys)
+
+		assert.Panics(t, func() { m.AddSystem(&dualSys) })
+		m.AddUISystem(&dualSys)
 
 		m.AddSystem(&removerSystem{
 			Remove:   []model.System{&termSys},
@@ -36,6 +40,9 @@ func TestSystems(t *testing.T) {
 		})
 
 		m.Run()
+
+		assert.Panics(t, func() { m.RemoveSystem(&termSys) })
+		assert.Panics(t, func() { m.RemoveUISystem(&uiSys) })
 
 		assert.Panics(t, func() { m.AddSystem(&termSys) })
 		assert.Panics(t, func() { m.AddUISystem(&uiSys) })
@@ -48,6 +55,16 @@ func (s *uiSystem) InitializeUI(w *ecs.World) {}
 func (s *uiSystem) UpdateUI(w *ecs.World)     {}
 func (s *uiSystem) PostUpdateUI(w *ecs.World) {}
 func (s *uiSystem) FinalizeUI(w *ecs.World)   {}
+
+type dualSystem struct{}
+
+func (s *dualSystem) Initialize(w *ecs.World)   {}
+func (s *dualSystem) InitializeUI(w *ecs.World) {}
+func (s *dualSystem) Update(w *ecs.World)       {}
+func (s *dualSystem) UpdateUI(w *ecs.World)     {}
+func (s *dualSystem) PostUpdateUI(w *ecs.World) {}
+func (s *dualSystem) Finalize(w *ecs.World)     {}
+func (s *dualSystem) FinalizeUI(w *ecs.World)   {}
 
 type removerSystem struct {
 	Remove   []model.System
