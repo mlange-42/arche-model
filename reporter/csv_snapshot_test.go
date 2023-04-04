@@ -1,43 +1,30 @@
 package reporter_test
 
 import (
+	"os"
+	"testing"
+
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
-	"github.com/mlange-42/arche/ecs"
+	"github.com/stretchr/testify/assert"
 )
 
-func ExampleSnapshotCSV() {
-	// Create a new model.
+func TestSnapshotCSV(t *testing.T) {
 	m := model.New()
 
-	// Add a SnapshotCSV reporter with an Observer.
 	m.AddSystem(&reporter.SnapshotCSV{
 		Observer:       &ExampleSnapshotObserver{},
 		FilePattern:    "../out/test-%06d.csv",
 		Sep:            ";",
 		UpdateInterval: 10,
 	})
-
-	// Add a termination system that ends the simulation.
 	m.AddSystem(&system.FixedTermination{Steps: 100})
 
-	// Run the simulation.
 	m.Run()
-}
 
-// ExampleSnapshotObserver to generate some simple tables.
-type ExampleSnapshotObserver struct{}
-
-func (o *ExampleSnapshotObserver) Initialize(w *ecs.World) {}
-func (o *ExampleSnapshotObserver) Update(w *ecs.World)     {}
-func (o *ExampleSnapshotObserver) Header(w *ecs.World) []string {
-	return []string{"A", "B", "C"}
-}
-func (o *ExampleSnapshotObserver) Values(w *ecs.World) [][]float64 {
-	return [][]float64{
-		{1, 2, 3},
-		{1, 2, 3},
-		{1, 2, 3},
-	}
+	_, err := os.Stat("../out/test-000000.csv")
+	assert.Nil(t, err)
+	_, err = os.Stat("../out/test-000090.csv")
+	assert.Nil(t, err)
 }
