@@ -8,7 +8,6 @@ import (
 
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche/ecs"
-	"github.com/mlange-42/arche/generic"
 )
 
 // SnapshotCSV reporter.
@@ -21,7 +20,7 @@ type SnapshotCSV struct {
 	UpdateInterval int                  // Update interval in model ticks.
 	header         []string
 	builder        strings.Builder
-	timeRes        generic.Resource[model.Time]
+	step           int64
 }
 
 // Initialize the system
@@ -38,16 +37,14 @@ func (s *SnapshotCSV) Initialize(w *ecs.World) {
 		panic(err)
 	}
 
-	s.timeRes = generic.NewResource[model.Time](w)
+	s.step = 0
 }
 
 // Update the system
 func (s *SnapshotCSV) Update(w *ecs.World) {
-	time := s.timeRes.Get()
-
 	s.Observer.Update(w)
-	if s.UpdateInterval == 0 || time.Tick%int64(s.UpdateInterval) == 0 {
-		file, err := os.Create(fmt.Sprintf(s.FilePattern, time.Tick))
+	if s.UpdateInterval == 0 || s.step%int64(s.UpdateInterval) == 0 {
+		file, err := os.Create(fmt.Sprintf(s.FilePattern, s.step))
 		if err != nil {
 			panic(err)
 		}
@@ -79,6 +76,7 @@ func (s *SnapshotCSV) Update(w *ecs.World) {
 			panic(err)
 		}
 	}
+	s.step++
 }
 
 // Finalize the system

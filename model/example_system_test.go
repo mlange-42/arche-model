@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/mlange-42/arche/generic"
@@ -11,12 +12,12 @@ import (
 
 // TestSystem is an example for implementing [System].
 type TestSystem struct {
-	timeRes generic.Resource[model.Time]
+	timeRes generic.Resource[resource.Tick]
 }
 
 // Initialize the system.
 func (s *TestSystem) Initialize(w *ecs.World) {
-	s.timeRes = generic.NewResource[model.Time](w)
+	s.timeRes = generic.NewResource[resource.Tick](w)
 }
 
 // Update the system.
