@@ -6,7 +6,7 @@ import (
 
 // Row observer interface. Provides column headers, and a single data row per call.
 //
-// See also [Table]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
+// See also [Table]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Row interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
@@ -16,7 +16,7 @@ type Row interface {
 
 // Table observer interface. Provides column headers, and multiple data rows per call.
 //
-// See also [Row]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
+// See also [Row]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Table interface {
 	Initialize(w *ecs.World)         // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)             // Update the observer.
@@ -26,7 +26,7 @@ type Table interface {
 
 // Matrix observer interface. Provides dimensionality, and a matrix of values per call.
 //
-// See also [Grid]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
+// See also [Grid]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Matrix interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
@@ -36,7 +36,7 @@ type Matrix interface {
 
 // Grid observer interface. Provides dimensionality, axis information, and a matrix of values per call.
 //
-// See also [Matrix]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
+// See also [Matrix]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Grid interface {
 	Matrix        // Methods from Matrix observer.
 	X() []float64 // X axis values.
