@@ -9,8 +9,8 @@ import (
 
 // Print reporter to print a table row per time step.
 type Print struct {
-	Observer       model.Observer // Observer to get data from.
-	UpdateInterval int            // Update/print interval in model ticks.
+	Observer       model.RowObserver // Observer to get data from.
+	UpdateInterval int               // Update/print interval in model ticks.
 	header         []string
 	step           int64
 }

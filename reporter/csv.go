@@ -14,10 +14,10 @@ import (
 //
 // Writes one row to a CSV file per step.
 type CSV struct {
-	Observer       model.Observer // Observer to get data from.
-	File           string         // Path to the output file.
-	Sep            string         // Column separator. Default ",".
-	UpdateInterval int            // Update interval in model ticks.
+	Observer       model.RowObserver // Observer to get data from.
+	File           string            // Path to the output file.
+	Sep            string            // Column separator. Default ",".
+	UpdateInterval int               // Update interval in model ticks.
 	file           *os.File
 	header         []string
 	builder        strings.Builder

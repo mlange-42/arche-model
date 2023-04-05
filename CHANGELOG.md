@@ -2,6 +2,11 @@
 
 ## [[v0.0.3]](https://github.com/mlange-42/arche-model/compare/v0.0.2...v0.0.3)
 
+### Breaking changes
+
+* Renamed `Observer` to `RowObserver` and `MatrixObserver` to TableObserver (#20)
+* Add new `MatrixObserver` for returning matrices (#20)
+
 ### Documentation
 
 * Extend documentation on `Model`, `Systems` and `Observer` (#18)
