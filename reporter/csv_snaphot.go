@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
 
@@ -14,10 +14,10 @@ import (
 //
 // Writes a CSV file per step.
 type SnapshotCSV struct {
-	Observer       model.TableObserver // Observer to get data from.
-	FilePattern    string              // File path and pattern for output files, like out/foo-%06d.csv
-	Sep            string              // Column separator. Default ",".
-	UpdateInterval int                 // Update interval in model ticks.
+	Observer       observer.Table // Observer to get data from.
+	FilePattern    string         // File path and pattern for output files, like out/foo-%06d.csv
+	Sep            string         // Column separator. Default ",".
+	UpdateInterval int            // Update interval in model ticks.
 	header         []string
 	builder        strings.Builder
 	step           int64

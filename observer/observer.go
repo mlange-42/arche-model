@@ -1,48 +1,48 @@
-package model
+package observer
 
 import (
 	"github.com/mlange-42/arche/ecs"
 )
 
-// RowObserver interface. Reports column headers, and a single data row per call.
+// Row observer interface. Reports column headers, and a single data row per call.
 //
-// Reporters like [system.CSV] require an RowObserver instance to extract data from the ECS world.
+// Reporters like [system.CSV] require an Row instance to extract data from the ECS world.
 //
-// See also [TableObserver].
-type RowObserver interface {
+// See also [Table].
+type Row interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
 	Header() []string              // Header/column names in the same order as data values.
 	Values(w *ecs.World) []float64 // Values for the current model tick.
 }
 
-// TableObserver interface. Reports column headers, and multiple data rows per call.
+// Table observer interface. Reports column headers, and multiple data rows per call.
 //
-// Reporters like [system.SnapshotCSV] require a TableObserver instance to extract data from the ECS world.
+// Reporters like [system.SnapshotCSV] require a Table instance to extract data from the ECS world.
 //
-// See also [RowObserver].
-type TableObserver interface {
+// See also [Row].
+type Table interface {
 	Initialize(w *ecs.World)         // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)             // Update the observer.
 	Header() []string                // Header/column names in the same order as data values.
 	Values(w *ecs.World) [][]float64 // Values for the current model tick.
 }
 
-// MatrixObserver interface. Reports dimensionality, and a matrix of values per call.
+// Matrix observer interface. Reports dimensionality, and a matrix of values per call.
 //
-// See also [GridObserver].
-type MatrixObserver interface {
+// See also [Grid].
+type Matrix interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
 	Dims() (int, int)              // Matrix dimensions.
 	Values(w *ecs.World) []float64 // Values for the current model tick, in row-major order (i.e. idx = row*ncols + col).
 }
 
-// GridObserver interface. Reports dimensionality, axis information, and a matrix of values per call.
+// Grid observer interface. Reports dimensionality, axis information, and a matrix of values per call.
 //
-// See also [MatrixObserver].
-type GridObserver interface {
-	MatrixObserver // Methods from MatrixObserver.
-	X() []float64  // X axis values.
-	Y() []float64  // Y axis values.
+// See also [Matrix].
+type Grid interface {
+	Matrix        // Methods from MatrixObserver.
+	X() []float64 // X axis values.
+	Y() []float64 // Y axis values.
 }

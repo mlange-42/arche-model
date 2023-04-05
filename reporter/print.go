@@ -3,14 +3,14 @@ package reporter
 import (
 	"fmt"
 
-	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
 
 // Print reporter to print a table row per time step.
 type Print struct {
-	Observer       model.RowObserver // Observer to get data from.
-	UpdateInterval int               // Update/print interval in model ticks.
+	Observer       observer.Row // Observer to get data from.
+	UpdateInterval int          // Update/print interval in model ticks.
 	header         []string
 	step           int64
 }
