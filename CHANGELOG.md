@@ -9,6 +9,10 @@
 * Add new `observer.Matrix` and `observer.Grid` for matrices and grids (#20)
 * Observer methods like `Header` don't take a `*ecs.World` argument (#20)
 
+### Features
+
+* `Model.Seed()` returns the receiver's pointer to allow for method chaining (#22)
+
 ### Documentation
 
 * Extend documentation on `Model`, `Systems` and observers (#18)
