@@ -10,13 +10,17 @@ import (
 )
 
 // System is the interface for ECS systems.
+//
+// See also [UISystem] for systems with an independent graphics step.
 type System interface {
 	Initialize(w *ecs.World) // Initialize the system.
 	Update(w *ecs.World)     // Update the system.
 	Finalize(w *ecs.World)   // Finalize the system.
 }
 
-// UISystem is the interface for ECS systems that display UI.
+// UISystem is the interface for ECS systems that display UI in an independent graphics step.
+//
+// See also [System] for normal systems.
 type UISystem interface {
 	InitializeUI(w *ecs.World) // InitializeUI the system.
 	UpdateUI(w *ecs.World)     // UpdateUI/update the system.
@@ -25,9 +29,15 @@ type UISystem interface {
 }
 
 // Systems manages and schedules ECS [System] and [UISystem] instances.
+//
+// [System] instances are updated with a frequency given by Tps.
+// [UISystem] instances are updated independently of normal systems, with a frequency given by Fps.
+//
+// [Systems] is an embed in [Model] and it's methods are usually only used through a [Model] instance.
+// By also being a resource of each [Model], however, systems can access it and e.g. remove themselves from a model.
 type Systems struct {
-	Fps float64 // Frames per second for UI systems. Values <= 0 sync FPS with TPS.
-	Tps float64 // Ticks per second for normal systems. Values <= 0 mean as fast as possible.
+	Fps float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
+	Tps float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
 
 	world      *ecs.World
 	systems    []System

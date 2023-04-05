@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.0.3]](https://github.com/mlange-42/arche-model/compare/v0.0.2...v0.0.3)
+
+### Documentation
+
+* Extend documentation on `Model`, `Systems` and `Observer` (#18)
+
 ## [[v0.0.2]](https://github.com/mlange-42/arche-model/compare/v0.0.1...v0.0.2)
 
 ### Breaking changes
