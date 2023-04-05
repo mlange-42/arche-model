@@ -4,11 +4,9 @@ import (
 	"github.com/mlange-42/arche/ecs"
 )
 
-// Row observer interface. Reports column headers, and a single data row per call.
+// Row observer interface. Provides column headers, and a single data row per call.
 //
-// Reporters like [system.CSV] require an Row instance to extract data from the ECS world.
-//
-// See also [Table].
+// See also [Table]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
 type Row interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
@@ -16,11 +14,9 @@ type Row interface {
 	Values(w *ecs.World) []float64 // Values for the current model tick.
 }
 
-// Table observer interface. Reports column headers, and multiple data rows per call.
+// Table observer interface. Provides column headers, and multiple data rows per call.
 //
-// Reporters like [system.SnapshotCSV] require a Table instance to extract data from the ECS world.
-//
-// See also [Row].
+// See also [Row]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
 type Table interface {
 	Initialize(w *ecs.World)         // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)             // Update the observer.
@@ -28,9 +24,9 @@ type Table interface {
 	Values(w *ecs.World) [][]float64 // Values for the current model tick.
 }
 
-// Matrix observer interface. Reports dimensionality, and a matrix of values per call.
+// Matrix observer interface. Provides dimensionality, and a matrix of values per call.
 //
-// See also [Grid].
+// See also [Grid]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
 type Matrix interface {
 	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
@@ -38,11 +34,11 @@ type Matrix interface {
 	Values(w *ecs.World) []float64 // Values for the current model tick, in row-major order (i.e. idx = row*ncols + col).
 }
 
-// Grid observer interface. Reports dimensionality, axis information, and a matrix of values per call.
+// Grid observer interface. Provides dimensionality, axis information, and a matrix of values per call.
 //
-// See also [Matrix].
+// See also [Matrix]. See package [github.com/mlange-42/arche-model/reporter] for observer implementation examples.
 type Grid interface {
-	Matrix        // Methods from MatrixObserver.
+	Matrix        // Methods from Matrix observer.
 	X() []float64 // X axis values.
 	Y() []float64 // Y axis values.
 }
