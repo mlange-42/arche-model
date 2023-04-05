@@ -31,7 +31,7 @@ type ExampleObserver struct{}
 
 func (o *ExampleObserver) Initialize(w *ecs.World) {}
 func (o *ExampleObserver) Update(w *ecs.World)     {}
-func (o *ExampleObserver) Header(w *ecs.World) []string {
+func (o *ExampleObserver) Header() []string {
 	return []string{"A", "B", "C"}
 }
 func (o *ExampleObserver) Values(w *ecs.World) []float64 {

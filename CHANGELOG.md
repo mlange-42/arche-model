@@ -2,9 +2,16 @@
 
 ## [[v0.0.3]](https://github.com/mlange-42/arche-model/compare/v0.0.2...v0.0.3)
 
+### Breaking changes
+
+* All observers moved to separate `observer` package (#20)
+* Renamed `Observer` to `observer.Row` and `MatrixObserver` to `observer.Table` (#20)
+* Add new `observer.Matrix` and `observer.Grid` for matrices and grids (#20)
+* Observer methods like `Header` don't take a `*ecs.World` argument (#20)
+
 ### Documentation
 
-* Extend documentation on `Model`, `Systems` and `Observer` (#18)
+* Extend documentation on `Model`, `Systems` and observers (#18)
 
 ## [[v0.0.2]](https://github.com/mlange-42/arche-model/compare/v0.0.1...v0.0.2)
 
