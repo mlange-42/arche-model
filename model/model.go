@@ -53,7 +53,7 @@ func New(config ...ecs.Config) *Model {
 // Call without an argument to seed from the current time.
 //
 // Systems should always use the [Rand] resource for PRNGs.
-func (m *Model) Seed(seed ...uint64) {
+func (m *Model) Seed(seed ...uint64) *Model {
 	switch len(seed) {
 	case 0:
 		m.rand.Seed(uint64(time.Now().UnixNano()))
@@ -62,6 +62,7 @@ func (m *Model) Seed(seed ...uint64) {
 	default:
 		panic("can only use a single random seed")
 	}
+	return m
 }
 
 // Run runs the model.
