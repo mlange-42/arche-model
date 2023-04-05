@@ -31,7 +31,7 @@ type ExampleSnapshotObserver struct{}
 
 func (o *ExampleSnapshotObserver) Initialize(w *ecs.World) {}
 func (o *ExampleSnapshotObserver) Update(w *ecs.World)     {}
-func (o *ExampleSnapshotObserver) Header(w *ecs.World) []string {
+func (o *ExampleSnapshotObserver) Header() []string {
 	return []string{"A", "B", "C"}
 }
 func (o *ExampleSnapshotObserver) Values(w *ecs.World) [][]float64 {

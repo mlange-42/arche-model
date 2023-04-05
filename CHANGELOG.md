@@ -4,8 +4,9 @@
 
 ### Breaking changes
 
-* Renamed `Observer` to `RowObserver` and `MatrixObserver` to TableObserver (#20)
-* Add new `MatrixObserver` for returning matrices (#20)
+* Renamed `Observer` to `RowObserver` and `MatrixObserver` to `TableObserver` (#20)
+* Add new `MatrixObserver` and `GridObserver` for matrices and grids (#20)
+* Observer methods like `Header` don't take a `*ecs.World` argument (#20)
 
 ### Documentation
 

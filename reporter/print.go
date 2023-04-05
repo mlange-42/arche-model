@@ -18,7 +18,7 @@ type Print struct {
 // Initialize the system
 func (s *Print) Initialize(w *ecs.World) {
 	s.Observer.Initialize(w)
-	s.header = s.Observer.Header(w)
+	s.header = s.Observer.Header()
 	s.step = 0
 }
 

@@ -10,9 +10,9 @@ import (
 //
 // See also [TableObserver].
 type RowObserver interface {
-	Initialize(w *ecs.World)       // Initialize the observer.
+	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
-	Header(w *ecs.World) []string  // Header/column names in the same order as data values.
+	Header() []string              // Header/column names in the same order as data values.
 	Values(w *ecs.World) []float64 // Values for the current model tick.
 }
 
@@ -22,19 +22,27 @@ type RowObserver interface {
 //
 // See also [RowObserver].
 type TableObserver interface {
-	Initialize(w *ecs.World)         // Initialize the observer.
+	Initialize(w *ecs.World)         // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)             // Update the observer.
-	Header(w *ecs.World) []string    // Header/column names in the same order as data values.
+	Header() []string                // Header/column names in the same order as data values.
 	Values(w *ecs.World) [][]float64 // Values for the current model tick.
 }
 
-// MatrixObserver interface. Reports axis information, and a matrix of values per call.
+// MatrixObserver interface. Reports dimensionality, and a matrix of values per call.
 //
-// See also [Observer].
+// See also [GridObserver].
 type MatrixObserver interface {
-	Initialize(w *ecs.World)       // Initialize the observer.
+	Initialize(w *ecs.World)       // Initialize the observer. No other methods are called before this.
 	Update(w *ecs.World)           // Update the observer.
-	X(w *ecs.World) []float64      // X axis values.
-	Y(w *ecs.World) []float64      // Y axis values.
+	Dims() (int, int)              // Matrix dimensions.
 	Values(w *ecs.World) []float64 // Values for the current model tick, in row-major order (i.e. idx = row*ncols + col).
+}
+
+// GridObserver interface. Reports dimensionality, axis information, and a matrix of values per call.
+//
+// See also [MatrixObserver].
+type GridObserver interface {
+	MatrixObserver // Methods from MatrixObserver.
+	X() []float64  // X axis values.
+	Y() []float64  // Y axis values.
 }
