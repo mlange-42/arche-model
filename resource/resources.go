@@ -12,7 +12,7 @@ type Tick struct {
 	Tick int64 // The current model tick.
 }
 
-// Termination is a resource holding a whether ths system should terminate after the current step.
+// Termination is a resource holding a whether the system should terminate after the current step.
 type Termination struct {
 	Terminate bool // Whether the model run is finished. Can be set by systems.
 }
