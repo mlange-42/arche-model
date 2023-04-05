@@ -10,8 +10,14 @@ import (
 
 // Model is the top-level ECS entrypoint.
 //
-// Model provides access to the ECS world, and manages the scheduling of [System] and [UISystem] instances.
-// The [Systems] scheduler, the model [Tick], [Termination] and a central [Rand] PRNG source can be accessed by systems as resources.
+// Model provides access to the ECS world, and manages the scheduling
+// of [System] and [UISystem] instances via [Systems].
+// [System] instances are updated with a frequency given by Tps.
+// [UISystem] instances are updated independently of normal systems,
+// with a frequency given by Fps.
+//
+// The [Systems] scheduler, the model's [resource.Tick], [resource.Termination]
+// and a central [resource.Rand] PRNG source can be accessed by systems as resources.
 type Model struct {
 	Systems             // Systems manager and scheduler
 	World     ecs.World // The ECS world

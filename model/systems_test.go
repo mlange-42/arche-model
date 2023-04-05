@@ -86,3 +86,22 @@ func (s *removerSystem) Update(w *ecs.World) {
 	s.step++
 }
 func (s *removerSystem) Finalize(w *ecs.World) {}
+
+func ExampleSystems() {
+	// Create a new model.
+	m := model.New()
+
+	// Create a system
+	sys := system.FixedTermination{
+		Steps: 10,
+	}
+
+	// Add the system the usual way, through the model.
+	m.AddSystem(&sys)
+
+	// Inside systems, [Systems] can be accessed as a resource.
+	s := ecs.GetResource[model.Systems](&m.World)
+	// Remove the system using the resource.
+	s.RemoveSystem(&sys)
+	// Output:
+}

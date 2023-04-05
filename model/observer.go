@@ -6,7 +6,9 @@ import (
 
 // Observer interface.
 //
-// Reporters like [systems.CSV] require an Observer instance to extract data from the ECS world.
+// Reporters like [system.CSV] require an Observer instance to extract data from the ECS world.
+//
+// See also [MatrixObserver].
 type Observer interface {
 	Initialize(w *ecs.World)       // Initialize the observer.
 	Update(w *ecs.World)           // Update the observer.
@@ -16,7 +18,9 @@ type Observer interface {
 
 // MatrixObserver interface
 //
-// Reporters like [systems.SnapshotCSV] require a MatrixObserver instance to extract data from the ECS world.
+// Reporters like [system.SnapshotCSV] require a MatrixObserver instance to extract data from the ECS world.
+//
+// See also [Observer].
 type MatrixObserver interface {
 	Initialize(w *ecs.World)         // Initialize the observer.
 	Update(w *ecs.World)             // Update the observer.
