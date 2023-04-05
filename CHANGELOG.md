@@ -12,6 +12,7 @@
 ### Documentation
 
 * Extend documentation on `Model`, `Systems` and observers (#18)
+* Adds full implementation examples for all observer interfaces (#21)
 
 ## [[v0.0.2]](https://github.com/mlange-42/arche-model/compare/v0.0.1...v0.0.2)
 
