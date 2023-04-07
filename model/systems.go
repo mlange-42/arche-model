@@ -157,9 +157,8 @@ func (s *Systems) initialize() {
 	s.removeSystems()
 	s.initialized = true
 
-	t := time.Now()
-	s.nextDraw = t
-	s.nextUpdate = t
+	s.nextDraw = time.Time{}
+	s.nextUpdate = time.Time{}
 }
 
 // Update all systems.
@@ -175,7 +174,7 @@ func (s *Systems) update() {
 		time := s.tickRes.Get()
 		time.Tick++
 	} else {
-		//s.wait()
+		s.wait()
 	}
 }
 
@@ -194,7 +193,8 @@ func (s *Systems) wait() {
 
 	t := time.Now()
 	wait := nextUpdate.Sub(t)
-	if wait > 0 {
+	// Wait only if time is sufficiently long, as time.Sleep only guaranties minimum waiting time.
+	if wait > time.Millisecond {
 		time.Sleep(wait)
 	}
 }
@@ -217,18 +217,6 @@ func (s *Systems) updateSystems() bool {
 		}
 	}
 	return update
-}
-
-func nextTime(last time.Time, fps float64) time.Time {
-	if fps <= 0 {
-		return last
-	}
-	dt := time.Second / time.Duration(fps)
-	now := time.Now()
-	if now.After(last.Add(10 * dt)) {
-		return now
-	}
-	return last.Add(dt)
 }
 
 // Update UI systems.
