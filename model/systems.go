@@ -45,8 +45,8 @@ type Systems struct {
 	toRemove   []System
 	uiToRemove []UISystem
 
-	lastDraw   time.Time
-	lastUpdate time.Time
+	nextDraw   time.Time
+	nextUpdate time.Time
 
 	initialized bool
 	locked      bool
@@ -156,6 +156,10 @@ func (s *Systems) initialize() {
 	s.locked = false
 	s.removeSystems()
 	s.initialized = true
+
+	t := time.Now()
+	s.nextDraw = t
+	s.nextUpdate = t
 }
 
 // Update all systems.
@@ -171,23 +175,24 @@ func (s *Systems) update() {
 		time := s.tickRes.Get()
 		time.Tick++
 	} else {
-		s.wait()
+		//s.wait()
 	}
 }
 
 // Calculates and waits the time until the next update of UI update.
 func (s *Systems) wait() {
-	t := time.Now()
-	nextUpdate := t
+	var nextUpdate time.Time
 	if s.Tps > 0 {
-		nextUpdate = s.lastUpdate.Add(time.Second / time.Duration(s.Tps))
+		nextUpdate = s.nextUpdate
 	}
-	if s.Fps > 0 {
-		nextUpdate2 := s.lastDraw.Add(time.Second / time.Duration(s.Fps))
-		if nextUpdate2.Before(nextUpdate) {
-			nextUpdate = nextUpdate2
-		}
+	if s.Fps > 0 && s.nextDraw.Before(nextUpdate) {
+		nextUpdate = s.nextDraw
 	}
+	if nextUpdate.IsZero() {
+		return
+	}
+
+	t := time.Now()
 	wait := nextUpdate.Sub(t)
 	if wait > 0 {
 		time.Sleep(wait)
@@ -203,17 +208,27 @@ func (s *Systems) updateSystems() bool {
 			sys.Update(s.world)
 		}
 	} else {
-		t := time.Now()
-		frameDur := t.Sub(s.lastUpdate)
-		update = 1.0/frameDur.Seconds() <= s.Tps
+		update = !time.Now().Before(s.nextUpdate)
 		if update {
-			s.lastUpdate = t
+			s.nextUpdate = nextTime(s.nextUpdate, s.Tps)
 			for _, sys := range s.systems {
 				sys.Update(s.world)
 			}
 		}
 	}
 	return update
+}
+
+func nextTime(last time.Time, fps float64) time.Time {
+	if fps <= 0 {
+		return last
+	}
+	dt := time.Second / time.Duration(fps)
+	now := time.Now()
+	if now.After(last.Add(10 * dt)) {
+		return now
+	}
+	return last.Add(dt)
 }
 
 // Update UI systems.
@@ -229,10 +244,8 @@ func (s *Systems) updateUISystems(updated bool) {
 				}
 			}
 		} else {
-			t := time.Now()
-			frameDur := t.Sub(s.lastDraw)
-			if 1.0/frameDur.Seconds() <= s.Fps {
-				s.lastDraw = t
+			if !time.Now().Before(s.nextDraw) {
+				s.nextDraw = nextTime(s.nextDraw, s.Fps)
 				for _, sys := range s.uiSystems {
 					sys.UpdateUI(s.world)
 				}
@@ -281,8 +294,8 @@ func (s *Systems) reset() {
 	s.toRemove = []System{}
 	s.uiToRemove = []UISystem{}
 
-	s.lastDraw = time.Time{}
-	s.lastUpdate = time.Time{}
+	s.nextDraw = time.Time{}
+	s.nextUpdate = time.Time{}
 
 	s.initialized = false
 	s.tickRes = generic.Resource[resource.Tick]{}
