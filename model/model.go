@@ -12,9 +12,9 @@ import (
 //
 // Model provides access to the ECS world, and manages the scheduling
 // of [System] and [UISystem] instances via [Systems].
-// [System] instances are updated with a frequency given by Tps.
+// [System] instances are updated with a frequency given by TPS.
 // [UISystem] instances are updated independently of normal systems,
-// with a frequency given by Fps.
+// with a frequency given by FPS.
 //
 // The [Systems] scheduler, the model's [resource.Tick], [resource.Termination]
 // and a central [resource.Rand] PRNG source can be accessed by systems as resources.
@@ -31,8 +31,8 @@ func New(config ...ecs.Config) *Model {
 	var mod = Model{
 		World: ecs.NewWorld(config...),
 	}
-	mod.Fps = 30
-	mod.Tps = 0
+	mod.FPS = 30
+	mod.TPS = 0
 	mod.Systems.world = &mod.World
 
 	mod.rand = resource.Rand{

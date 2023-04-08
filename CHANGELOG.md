@@ -2,6 +2,10 @@
 
 ## [[v0.0.4]](https://github.com/mlange-42/arche-model/compare/v0.0.4...v0.0.5)
 
+### Breaking changes
+
+* Renamed `Systems.Fps` and `Systems.Tps` to `Systems.FPS` and `Systems.TPS` (#26)
+
 ### Features
 
 * Simulations can be paused through the `Systems` resource (#25)
