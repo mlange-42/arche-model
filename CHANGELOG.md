@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.0.4]](https://github.com/mlange-42/arche-model/compare/v0.0.4...v0.0.5)
+
+### Features
+
+* Simulations can be paused through the `Systems` resource (#25)
+
 ## [[v0.0.4]](https://github.com/mlange-42/arche-model/compare/v0.0.3...v0.0.4)
 
 ### Other
