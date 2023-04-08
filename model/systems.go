@@ -36,8 +36,9 @@ type UISystem interface {
 // [Systems] is an embed in [Model] and it's methods are usually only used through a [Model] instance.
 // By also being a resource of each [Model], however, systems can access it and e.g. remove themselves from a model.
 type Systems struct {
-	Fps float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
-	Tps float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
+	Fps    float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
+	Tps    float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
+	Paused bool    // Whether the simulation is currently paused. When paused, only UI updates but no normal updates are performed.
 
 	world      *ecs.World
 	systems    []System
@@ -184,7 +185,7 @@ func (s *Systems) wait() {
 	if s.Tps > 0 {
 		nextUpdate = s.nextUpdate
 	}
-	if s.Fps > 0 && s.nextDraw.Before(nextUpdate) {
+	if (s.Paused || s.Fps > 0) && s.nextDraw.Before(nextUpdate) {
 		nextUpdate = s.nextDraw
 	}
 	if nextUpdate.IsZero() {
@@ -201,6 +202,9 @@ func (s *Systems) wait() {
 
 // Update normal systems.
 func (s *Systems) updateSystems() bool {
+	if s.Paused {
+		return false
+	}
 	update := false
 	if s.Tps <= 0 {
 		update = true
@@ -222,7 +226,7 @@ func (s *Systems) updateSystems() bool {
 // Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
 	if len(s.uiSystems) > 0 {
-		if s.Fps <= 0 {
+		if !s.Paused && s.Fps <= 0 {
 			if updated {
 				for _, sys := range s.uiSystems {
 					sys.UpdateUI(s.world)
@@ -233,7 +237,11 @@ func (s *Systems) updateUISystems(updated bool) {
 			}
 		} else {
 			if !time.Now().Before(s.nextDraw) {
-				s.nextDraw = nextTime(s.nextDraw, s.Fps)
+				fps := s.Fps
+				if s.Paused {
+					fps = 30
+				}
+				s.nextDraw = nextTime(s.nextDraw, fps)
 				for _, sys := range s.uiSystems {
 					sys.UpdateUI(s.world)
 				}
