@@ -16,8 +16,8 @@ func TestSystems(t *testing.T) {
 
 		m.Seed()
 		m.Seed(123)
-		m.Tps = 120
-		m.Fps = 60
+		m.TPS = 120
+		m.FPS = 60
 
 		termSys := system.FixedTermination{
 			Steps: 1000,

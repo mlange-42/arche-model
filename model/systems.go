@@ -30,14 +30,14 @@ type UISystem interface {
 
 // Systems manages and schedules ECS [System] and [UISystem] instances.
 //
-// [System] instances are updated with a frequency given by Tps.
-// [UISystem] instances are updated independently of normal systems, with a frequency given by Fps.
+// [System] instances are updated with a frequency given by TPS (ticks per second).
+// [UISystem] instances are updated independently of normal systems, with a frequency given by FPS (frames per second).
 //
 // [Systems] is an embed in [Model] and it's methods are usually only used through a [Model] instance.
 // By also being a resource of each [Model], however, systems can access it and e.g. remove themselves from a model.
 type Systems struct {
-	Fps    float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
-	Tps    float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
+	FPS    float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
+	TPS    float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
 	Paused bool    // Whether the simulation is currently paused. When paused, only UI updates but no normal updates are performed.
 
 	world      *ecs.World
@@ -182,10 +182,10 @@ func (s *Systems) update() {
 // Calculates and waits the time until the next update of UI update.
 func (s *Systems) wait() {
 	var nextUpdate time.Time
-	if s.Tps > 0 {
+	if s.TPS > 0 {
 		nextUpdate = s.nextUpdate
 	}
-	if (s.Paused || s.Fps > 0) && s.nextDraw.Before(nextUpdate) {
+	if (s.Paused || s.FPS > 0) && s.nextDraw.Before(nextUpdate) {
 		nextUpdate = s.nextDraw
 	}
 	if nextUpdate.IsZero() {
@@ -206,7 +206,7 @@ func (s *Systems) updateSystems() bool {
 		return false
 	}
 	update := false
-	if s.Tps <= 0 {
+	if s.TPS <= 0 {
 		update = true
 		for _, sys := range s.systems {
 			sys.Update(s.world)
@@ -214,7 +214,7 @@ func (s *Systems) updateSystems() bool {
 	} else {
 		update = !time.Now().Before(s.nextUpdate)
 		if update {
-			s.nextUpdate = nextTime(s.nextUpdate, s.Tps)
+			s.nextUpdate = nextTime(s.nextUpdate, s.TPS)
 			for _, sys := range s.systems {
 				sys.Update(s.world)
 			}
@@ -226,7 +226,7 @@ func (s *Systems) updateSystems() bool {
 // Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
 	if len(s.uiSystems) > 0 {
-		if !s.Paused && s.Fps <= 0 {
+		if !s.Paused && s.FPS <= 0 {
 			if updated {
 				for _, sys := range s.uiSystems {
 					sys.UpdateUI(s.world)
@@ -237,7 +237,7 @@ func (s *Systems) updateUISystems(updated bool) {
 			}
 		} else {
 			if !time.Now().Before(s.nextDraw) {
-				fps := s.Fps
+				fps := s.FPS
 				if s.Paused {
 					fps = 30
 				}
