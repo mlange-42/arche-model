@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.0.4]](https://github.com/mlange-42/arche-model/compare/v0.0.3...v0.0.4)
+
+### Other
+
+* Precise (average) FPS and TPS timing by using semi-cumulative time (#24)
+
 ## [[v0.0.3]](https://github.com/mlange-42/arche-model/compare/v0.0.2...v0.0.3)
 
 ### Breaking changes
