@@ -6,6 +6,10 @@
 
 * Renamed `Systems.Fps` and `Systems.Tps` to `Systems.FPS` and `Systems.TPS` (#26)
 
+### Other
+
+* Unset/zero `Model.FPS` sets to 30 FPS, as a default more useful than synced with TPS (#27)
+
 ### Features
 
 * Simulations can be paused through the `Systems` resource (#25)

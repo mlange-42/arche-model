@@ -36,8 +36,8 @@ type UISystem interface {
 // [Systems] is an embed in [Model] and it's methods are usually only used through a [Model] instance.
 // By also being a resource of each [Model], however, systems can access it and e.g. remove themselves from a model.
 type Systems struct {
-	FPS    float64 // Frames per second for UI systems. Values <= 0 (the default) sync FPS with TPS.
 	TPS    float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
+	FPS    float64 // Frames per second for UI systems. A zero/unset value defaults to 30 FPS. Values < 0 sync FPS with TPS.
 	Paused bool    // Whether the simulation is currently paused. When paused, only UI updates but no normal updates are performed.
 
 	world      *ecs.World
@@ -141,12 +141,17 @@ func (s *Systems) removeSystems() {
 
 // Initialize all systems.
 func (s *Systems) initialize() {
-	s.tickRes = generic.NewResource[resource.Tick](s.world)
-	s.termRes = generic.NewResource[resource.Termination](s.world)
-
 	if s.initialized {
 		panic("model is already initialized")
 	}
+
+	if s.FPS == 0 {
+		s.FPS = 30
+	}
+
+	s.tickRes = generic.NewResource[resource.Tick](s.world)
+	s.termRes = generic.NewResource[resource.Termination](s.world)
+
 	s.locked = true
 	for _, sys := range s.systems {
 		sys.Initialize(s.world)
