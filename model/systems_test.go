@@ -49,6 +49,15 @@ func TestSystems(t *testing.T) {
 	}
 }
 
+func TestSystemsInit(t *testing.T) {
+	m := model.New()
+	m.AddSystem(&system.FixedTermination{Steps: 1})
+	m.Run()
+
+	assert.Equal(t, 30.0, m.FPS)
+	assert.Equal(t, 0.0, m.TPS)
+}
+
 type uiSystem struct{}
 
 func (s *uiSystem) InitializeUI(w *ecs.World) {}
