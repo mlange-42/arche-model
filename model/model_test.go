@@ -21,3 +21,17 @@ func TestModel(t *testing.T) {
 		m.Run()
 	}
 }
+
+func ExampleModel() {
+	// Create a new, seeded model.
+	m := model.New().Seed(123)
+
+	// Add systems.
+	m.AddSystem(&system.FixedTermination{
+		Steps: 100,
+	})
+
+	// Run the simulation.
+	m.Run()
+	// Output:
+}
