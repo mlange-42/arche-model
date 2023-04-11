@@ -88,6 +88,9 @@ func (s *Systems) AddUISystem(sys UISystem) {
 // Systems can also be removed during a model run.
 // However, this will take effect only after the end of the full model step.
 func (s *Systems) RemoveSystem(sys System) {
+	if sys, ok := sys.(UISystem); ok {
+		panic(fmt.Sprintf("System %T is also an UI system. Must be removed via RemoveUISystem.", sys))
+	}
 	s.toRemove = append(s.toRemove, sys)
 	if !s.locked {
 		s.removeSystems()
@@ -108,35 +111,52 @@ func (s *Systems) RemoveUISystem(sys UISystem) {
 // Removes systems that were removed during the model step.
 func (s *Systems) removeSystems() {
 	for _, sys := range s.toRemove {
-		idx := -1
-		for i := 0; i < len(s.systems); i++ {
-			if sys == s.systems[i] {
-				idx = i
-				break
-			}
-		}
-		if idx < 0 {
-			panic(fmt.Sprintf("can't remove system %T: not in the model", sys))
-		}
-		s.systems[idx].Finalize(s.world)
-		s.systems = append(s.systems[:idx], s.systems[idx+1:]...)
+		s.removeSystem(sys)
 	}
 	for _, sys := range s.uiToRemove {
-		idx := -1
-		for i := 0; i < len(s.uiSystems); i++ {
-			if sys == s.uiSystems[i] {
-				idx = i
-				break
-			}
+		if sys, ok := sys.(System); ok {
+			s.removeSystem(sys)
 		}
-		if idx < 0 {
-			panic(fmt.Sprintf("can't remove UI system %T: not in the model", sys))
-		}
-		s.uiSystems[idx].FinalizeUI(s.world)
-		s.uiSystems = append(s.uiSystems[:idx], s.uiSystems[idx+1:]...)
+		s.removeUISystem(sys)
 	}
 	s.toRemove = s.toRemove[:0]
 	s.uiToRemove = s.uiToRemove[:0]
+}
+
+func (s *Systems) removeSystem(sys System) {
+	if s.locked {
+		panic("can't remove a system in locked state")
+	}
+	idx := -1
+	for i := 0; i < len(s.systems); i++ {
+		if sys == s.systems[i] {
+			idx = i
+			break
+		}
+	}
+	if idx < 0 {
+		panic(fmt.Sprintf("can't remove system %T: not in the model", sys))
+	}
+	s.systems[idx].Finalize(s.world)
+	s.systems = append(s.systems[:idx], s.systems[idx+1:]...)
+}
+
+func (s *Systems) removeUISystem(sys UISystem) {
+	if s.locked {
+		panic("can't remove a system in locked state")
+	}
+	idx := -1
+	for i := 0; i < len(s.uiSystems); i++ {
+		if sys == s.uiSystems[i] {
+			idx = i
+			break
+		}
+	}
+	if idx < 0 {
+		panic(fmt.Sprintf("can't remove UI system %T: not in the model", sys))
+	}
+	s.uiSystems[idx].FinalizeUI(s.world)
+	s.uiSystems = append(s.uiSystems[:idx], s.uiSystems[idx+1:]...)
 }
 
 // Initialize all systems.

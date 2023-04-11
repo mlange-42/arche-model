@@ -10,7 +10,7 @@ import (
 func TestPerfTimer(t *testing.T) {
 	m := model.New()
 
-	m.AddSystem(&system.PerfTimer{UpdateInterval: 10})
+	m.AddSystem(&system.PerfTimer{UpdateInterval: 10, Stats: true})
 	m.AddSystem(&system.FixedTermination{Steps: 30})
 
 	m.Run()

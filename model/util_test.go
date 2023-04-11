@@ -13,4 +13,5 @@ func TestNextTime(t *testing.T) {
 	assert.Equal(t, start.Add(time.Second), nextTime(start, 1))
 	assert.Equal(t, start.Add(time.Second/2), nextTime(start, 2))
 	assert.Equal(t, start.Add(time.Second/60), nextTime(start, 60))
+	assert.Equal(t, start, nextTime(start, 0))
 }

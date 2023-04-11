@@ -16,7 +16,6 @@ func TestCSV(t *testing.T) {
 	m.AddSystem(&reporter.CSV{
 		Observer:       &ExampleObserver{},
 		File:           "../out/test.csv",
-		Sep:            ";",
 		UpdateInterval: 10,
 	})
 	m.AddSystem(&system.FixedTermination{Steps: 100})
