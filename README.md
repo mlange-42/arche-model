@@ -1,6 +1,7 @@
 # Arche Model
 
 [![Test status](https://img.shields.io/github/actions/workflow/status/mlange-42/arche-model/tests.yml?branch=main&label=Tests&logo=github)](https://github.com/mlange-42/arche-model/actions/workflows/tests.yml)
+[![Coverage Status](https://coveralls.io/repos/github/mlange-42/arche-model/badge.svg?branch=main)](https://coveralls.io/github/mlange-42/arche-model?branch=main)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mlange-42/arche-model)](https://goreportcard.com/report/github.com/mlange-42/arche-model)
 [![Go Reference](https://pkg.go.dev/badge/github.com/mlange-42/arche-model.svg)](https://pkg.go.dev/github.com/mlange-42/arche-model)
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/arche-model)

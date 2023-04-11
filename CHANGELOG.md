@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.0.6]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.0.6)
+
+### Other
+
+* Brings test coverage to 95%, adds test coverage badge (#30)
+
 ## [[v0.0.5]](https://github.com/mlange-42/arche-model/compare/v0.0.4...v0.0.5)
 
 ### Breaking changes
