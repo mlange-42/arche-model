@@ -1,23 +1,20 @@
-package model_test
+package model
 
 import (
 	"testing"
 
-	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche/ecs"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestSystems(t *testing.T) {
-	m := model.New()
+	m := New()
 	for i := 0; i < 3; i++ {
 		m.Reset()
 
 		m.Seed()
 		m.Seed(123)
-		m.TPS = 120
-		m.FPS = 60
 
 		termSys := system.FixedTermination{
 			Steps: 1000,
@@ -31,15 +28,26 @@ func TestSystems(t *testing.T) {
 		})
 		m.AddUISystem(&uiSys)
 
+		m.locked = true
+		assert.Panics(t, func() { m.removeSystem(&termSys) })
+		assert.Panics(t, func() { m.removeUISystem(&uiSys) })
+		m.locked = false
+
 		assert.Panics(t, func() { m.AddSystem(&dualSys) })
 		m.AddUISystem(&dualSys)
 
 		m.AddSystem(&removerSystem{
-			Remove:   []model.System{&termSys},
-			RemoveUI: []model.UISystem{&uiSys},
+			Remove:   []System{&termSys},
+			RemoveUI: []UISystem{&uiSys},
 		})
 
+		assert.Panics(t, func() { m.RemoveSystem(&dualSys) })
+
 		m.Run()
+		assert.Panics(t, func() { m.initialize() })
+
+		m.RemoveUISystem(&dualSys)
+		assert.Panics(t, func() { m.RemoveUISystem(&dualSys) })
 
 		assert.Panics(t, func() { m.RemoveSystem(&termSys) })
 		assert.Panics(t, func() { m.RemoveUISystem(&uiSys) })
@@ -50,12 +58,42 @@ func TestSystems(t *testing.T) {
 }
 
 func TestSystemsInit(t *testing.T) {
-	m := model.New()
-	m.AddSystem(&system.FixedTermination{Steps: 1})
+	m := New()
+	m.TPS = 0
+	m.FPS = 0
+
+	m.AddSystem(&system.FixedTermination{Steps: 5})
+	m.AddUISystem(&uiSystem{})
 	m.Run()
 
 	assert.Equal(t, 30.0, m.FPS)
 	assert.Equal(t, 0.0, m.TPS)
+
+	m = New()
+	m.TPS = 10
+
+	m.AddSystem(&system.FixedTermination{Steps: 5})
+	m.AddUISystem(&uiSystem{})
+
+	m.Run()
+
+	m = New()
+	m.TPS = 10
+	m.FPS = 30
+
+	m.AddSystem(&system.FixedTermination{Steps: 5})
+	m.AddUISystem(&uiSystem{})
+
+	m.Run()
+
+	m = New()
+	m.TPS = 10
+	m.FPS = -1
+
+	m.AddSystem(&system.FixedTermination{Steps: 5})
+	m.AddUISystem(&uiSystem{})
+
+	m.Run()
 }
 
 type uiSystem struct{}
@@ -76,15 +114,15 @@ func (s *dualSystem) Finalize(w *ecs.World)     {}
 func (s *dualSystem) FinalizeUI(w *ecs.World)   {}
 
 type removerSystem struct {
-	Remove   []model.System
-	RemoveUI []model.UISystem
+	Remove   []System
+	RemoveUI []UISystem
 	step     int
 }
 
 func (s *removerSystem) Initialize(w *ecs.World) {}
 func (s *removerSystem) Update(w *ecs.World) {
 	if s.step == 3 {
-		systems := ecs.GetResource[model.Systems](w)
+		systems := ecs.GetResource[Systems](w)
 		for _, sys := range s.Remove {
 			systems.RemoveSystem(sys)
 		}
@@ -95,31 +133,3 @@ func (s *removerSystem) Update(w *ecs.World) {
 	s.step++
 }
 func (s *removerSystem) Finalize(w *ecs.World) {}
-
-func ExampleSystems() {
-	// Create a new model.
-	m := model.New()
-
-	// The model contains Systems as an embed, TPS and FPS are accessible through the model directly.
-	m.TPS = 1000
-	m.FPS = 60
-
-	// Create a system
-	sys := system.FixedTermination{
-		Steps: 10,
-	}
-
-	// Add the system the usual way, through the model.
-	// The model contains Systems as an embed, so actually [Systems.AddSystem] is called.
-	m.AddSystem(&sys)
-
-	// Inside systems, [Systems] can be accessed as a resource.
-	systems := ecs.GetResource[model.Systems](&m.World)
-
-	// Pause the simulation, e.g. based on user input.
-	systems.Paused = true
-
-	// Remove the system using the resource.
-	systems.RemoveSystem(&sys)
-	// Output:
-}

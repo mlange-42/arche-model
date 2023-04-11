@@ -49,7 +49,7 @@ func New(config ...ecs.Config) *Model {
 	return &mod
 }
 
-// Seed sets the random seed of the model's resource.Rand (see [github.com/mlange-42/arche-model/resource.Rand]).
+// Seed sets the random seed of the model's [resource.Rand].
 // Call without an argument to seed from the current time.
 //
 // Systems should always use the Rand resource for PRNGs.
@@ -68,7 +68,7 @@ func (m *Model) Seed(seed ...uint64) *Model {
 // Run runs the model.
 //
 // Runs until Terminate in the resource resource.Termination is set to true
-// (see [github.com/mlange-42/arche-model/resource.Termination]).
+// (see [resource.Termination]).
 func (m *Model) Run() {
 	m.Systems.run()
 }

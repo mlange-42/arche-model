@@ -4,7 +4,10 @@ import (
 	"testing"
 
 	"github.com/mlange-42/arche-model/model"
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche-model/system"
+	"github.com/mlange-42/arche/ecs"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestModel(t *testing.T) {
@@ -20,6 +23,22 @@ func TestModel(t *testing.T) {
 
 		m.Run()
 	}
+}
+
+func TestModelSeed(t *testing.T) {
+	m := model.New()
+	m.Seed(123)
+
+	rand := ecs.GetResource[resource.Rand](&m.World)
+	r1 := rand.Uint64()
+
+	m.Seed(123)
+	assert.Equal(t, r1, rand.Uint64())
+
+	m.Seed()
+	assert.NotEqual(t, r1, rand.Uint64())
+
+	assert.Panics(t, func() { m.Seed(1, 2, 3) })
 }
 
 func ExampleModel() {
