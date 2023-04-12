@@ -36,9 +36,16 @@ type UISystem interface {
 // [Systems] is an embed in [Model] and it's methods are usually only used through a [Model] instance.
 // By also being a resource of each [Model], however, systems can access it and e.g. remove themselves from a model.
 type Systems struct {
-	TPS    float64 // Ticks per second for normal systems. Values <= 0 (the default) mean as fast as possible.
-	FPS    float64 // Frames per second for UI systems. A zero/unset value defaults to 30 FPS. Values < 0 sync FPS with TPS.
-	Paused bool    // Whether the simulation is currently paused. When paused, only UI updates but no normal updates are performed.
+	// Ticks per second for normal systems.
+	// Values <= 0 (the default) mean as fast as possible.
+	TPS float64
+	// Frames per second for UI systems.
+	// A zero/unset value defaults to 30 FPS. Values < 0 sync FPS with TPS.
+	// With fast movement, a value of 60 may be required for fluent graphics.
+	FPS float64
+	// Whether the simulation is currently paused.
+	// When paused, only UI updates but no normal updates are performed.
+	Paused bool
 
 	world      *ecs.World
 	systems    []System
@@ -214,8 +221,8 @@ func (s *Systems) wait() {
 
 	t := time.Now()
 	wait := nextUpdate.Sub(t)
-	// Wait only if time is sufficiently long, as time.Sleep only guaranties minimum waiting time.
-	if wait > time.Millisecond {
+
+	if wait > 0 {
 		time.Sleep(wait)
 	}
 }
