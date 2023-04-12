@@ -6,6 +6,7 @@
 
 * Brings test coverage to 95%, adds test coverage badge (#30)
 * More precise TPS when simulation does not reach target TPS (#31)
+* Get rid of hot loop for waiting small amounts of time (#32)
 
 ## [[v0.0.5]](https://github.com/mlange-42/arche-model/compare/v0.0.4...v0.0.5)
 

@@ -214,8 +214,8 @@ func (s *Systems) wait() {
 
 	t := time.Now()
 	wait := nextUpdate.Sub(t)
-	// Wait only if time is sufficiently long, as time.Sleep only guaranties minimum waiting time.
-	if wait > time.Millisecond {
+
+	if wait > 0 {
 		time.Sleep(wait)
 	}
 }
