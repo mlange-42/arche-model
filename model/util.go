@@ -9,8 +9,8 @@ func nextTime(last time.Time, fps float64) time.Time {
 	}
 	dt := time.Second / time.Duration(fps)
 	now := time.Now()
-	if now.After(last.Add(10 * dt)) {
-		return now
+	if now.After(last.Add(200 * time.Millisecond)) {
+		return now.Add(-10 * time.Millisecond)
 	}
 	return last.Add(dt)
 }
