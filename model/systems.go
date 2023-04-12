@@ -206,15 +206,10 @@ func (s *Systems) update() {
 
 // Calculates and waits the time until the next update of UI update.
 func (s *Systems) wait() {
-	var nextUpdate time.Time
-	if s.TPS > 0 {
-		nextUpdate = s.nextUpdate
-	}
+	nextUpdate := s.nextUpdate
+
 	if (s.Paused || s.FPS > 0) && s.nextDraw.Before(nextUpdate) {
 		nextUpdate = s.nextDraw
-	}
-	if nextUpdate.IsZero() {
-		return
 	}
 
 	t := time.Now()

@@ -5,6 +5,7 @@
 ### Other
 
 * Brings test coverage to 95%, adds test coverage badge (#30)
+* More precise TPS when simulation does not reach target TPS (#31)
 
 ## [[v0.0.5]](https://github.com/mlange-42/arche-model/compare/v0.0.4...v0.0.5)
 
