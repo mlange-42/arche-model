@@ -35,3 +35,13 @@ func ExampleTermination() {
 	fmt.Println(term.Terminate)
 	// Output: false
 }
+
+func ExampleSelectedEntity() {
+	m := model.New()
+	ecs.AddResource(&m.World, &resource.SelectedEntity{})
+
+	sel := ecs.GetResource[resource.SelectedEntity](&m.World)
+
+	fmt.Println(sel.Selected.IsZero())
+	// Output: true
+}

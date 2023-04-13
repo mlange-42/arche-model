@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.1.1]](https://github.com/mlange-42/arche-model/compare/v0.1.0...v0.1.1)
+
+### Features
+
+* Adds a resource `SelectedEntity` for the use in UI systems and for inspecting entities (#34)
+
 ## [[v0.1.0]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.1.0)
 
 ### Other
