@@ -4,7 +4,11 @@
 
 ### Features
 
-* Adds a resource `SelectedEntity` for the use in UI systems and for inspecting entities (#34)
+* Adds a resource `SelectedEntity` for communication between UI systems, e.g. for entity inspection or manipulation by the user (#34)
+
+### Documentation
+
+* Extends documentation on resources (#34)
 
 ## [[v0.1.0]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.1.0)
 
