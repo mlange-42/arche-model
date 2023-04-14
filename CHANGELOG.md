@@ -1,6 +1,6 @@
 # Changelog
 
-## [[v0.1.1]](https://github.com/mlange-42/arche-model/compare/v0.1.0...v0.1.1)
+## [[v0.2.0]](https://github.com/mlange-42/arche-model/compare/v0.1.0...v0.2.0)
 
 ### Features
 
@@ -9,6 +9,7 @@
 ### Documentation
 
 * Extends documentation on resources (#34)
+* Adds a list of features to the README (#35)
 
 ## [[v0.1.0]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.1.0)
 

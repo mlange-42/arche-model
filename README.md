@@ -10,6 +10,13 @@
 *Arche Model* provides a wrapper around the [Arche](https://github.com/mlange-42/arche) Entity Component System (ECS), and some common systems and resources.
 It's purpose is to get started with prototyping and developing simulation models immediately, focussing on the model logic.
 
+## Features
+
+* Scheduler for running logic and UI systems with independent update rates.
+* Interfaces for ECS systems and observers.
+* Ready-to-use systems for common tasks like writing CSV files or terminating a simulation.
+* Common ECS resources, like central PRNG source or the current model tick.
+
 ## Installation
 
 ```
