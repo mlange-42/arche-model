@@ -9,7 +9,7 @@
 ### Documentation
 
 * Extends documentation on resources (#34)
-* Adds a list of features to the README (#35)
+* Adds a list of features and a usage example to the README (#35)
 
 ## [[v0.1.0]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.1.0)
 
