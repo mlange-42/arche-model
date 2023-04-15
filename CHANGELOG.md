@@ -11,6 +11,10 @@
 * Extends documentation on resources (#34)
 * Adds a list of features and a usage example to the README (#35)
 
+### Other
+
+* Upgrade to Arche v0.7.0 (#36)
+
 ## [[v0.1.0]](https://github.com/mlange-42/arche-model/compare/v0.0.5...v0.1.0)
 
 ### Other
