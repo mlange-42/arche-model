@@ -12,6 +12,7 @@ type PerfTimer struct {
 	UpdateInterval int  // Update/print interval in model ticks.
 	Stats          bool // Whether to print world stats.
 	start          time.Time
+	startSim       time.Time
 	step           int64
 }
 
@@ -25,6 +26,7 @@ func (s *PerfTimer) Update(w *ecs.World) {
 	t := time.Now()
 	if s.step == 0 {
 		s.start = t
+		s.startSim = t
 	}
 	if s.step%int64(s.UpdateInterval) == 0 {
 		if s.step > 0 {
@@ -41,4 +43,9 @@ func (s *PerfTimer) Update(w *ecs.World) {
 }
 
 // Finalize the system
-func (s *PerfTimer) Finalize(w *ecs.World) {}
+func (s *PerfTimer) Finalize(w *ecs.World) {
+	t := time.Now()
+	dur := t.Sub(s.startSim)
+	usec := float64(dur.Microseconds()) / float64(s.step)
+	fmt.Printf("Total: %d updates, %0.2f us/update\n", s.step, usec)
+}
