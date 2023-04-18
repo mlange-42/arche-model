@@ -13,8 +13,6 @@ type GridObserver struct {
 	cellsize float64
 	xOrigin  float64
 	yOrigin  float64
-	x        []float64
-	y        []float64
 	values   []float64
 }
 
@@ -27,16 +25,7 @@ func (o *GridObserver) Initialize(w *ecs.World) {
 	o.xOrigin = 123_000
 	o.yOrigin = 234_000
 
-	o.x = make([]float64, o.cols)
-	o.y = make([]float64, o.rows)
 	o.values = make([]float64, o.cols*o.rows)
-
-	for i := 0; i < o.cols; i++ {
-		o.x[i] = o.xOrigin + o.cellsize*float64(i)
-	}
-	for i := 0; i < o.cols; i++ {
-		o.y[i] = o.yOrigin + o.cellsize*float64(i)
-	}
 }
 
 func (o *GridObserver) Update(w *ecs.World) {}
@@ -45,18 +34,18 @@ func (o *GridObserver) Dims() (int, int) {
 	return o.cols, o.rows
 }
 
-func (o *GridObserver) X() []float64 {
-	return o.x
+func (o *GridObserver) X(c int) float64 {
+	return o.xOrigin + o.cellsize*float64(c)
 }
 
-func (o *GridObserver) Y() []float64 {
-	return o.y
+func (o *GridObserver) Y(r int) float64 {
+	return o.yOrigin + o.cellsize*float64(r)
 }
 
 func (o *GridObserver) Values(w *ecs.World) []float64 {
 	for idx := 0; idx < len(o.values); idx++ {
-		x := o.x[idx%o.cols]
-		y := o.y[idx/o.cols]
+		x := o.X(idx % o.cols)
+		y := o.Y(idx / o.cols)
 		o.values[idx] = float64(x*x + y)
 	}
 	return o.values
