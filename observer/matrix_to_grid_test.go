@@ -11,16 +11,24 @@ import (
 
 type matObs struct {
 	values []float64
+	Cols   int
+	Rows   int
 }
 
 func (o *matObs) Initialize(w *ecs.World) {
-	o.values = make([]float64, 20*30)
+	if o.Cols == 0 {
+		o.Cols = 30
+	}
+	if o.Rows == 0 {
+		o.Rows = 20
+	}
+	o.values = make([]float64, o.Cols*o.Rows)
 }
 
 func (o *matObs) Update(w *ecs.World) {}
 
 func (o *matObs) Dims() (int, int) {
-	return 30, 20
+	return o.Cols, o.Rows
 }
 
 func (o *matObs) Values(w *ecs.World) []float64 {
@@ -59,4 +67,7 @@ func TestMatrixToGrid(t *testing.T) {
 	grid.Initialize(&m.World)
 	assert.Equal(t, 1.0, grid.X(1))
 	assert.Equal(t, 1.0, grid.Y(1))
+
+	data := grid.Values(&m.World)
+	assert.Equal(t, 20*30, len(data))
 }

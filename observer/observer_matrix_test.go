@@ -1,7 +1,6 @@
 package observer_test
 
 import (
-	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
@@ -35,9 +34,6 @@ func (o *MatrixObserver) Values(w *ecs.World) []float64 {
 }
 
 func ExampleMatrix() {
-	m := model.New()
-
-	var obs observer.Matrix = &MatrixObserver{}
-	_ = obs.Values(&m.World)
+	var _ observer.Matrix = &MatrixObserver{}
 	// Output:
 }

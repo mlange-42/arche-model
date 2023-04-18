@@ -34,11 +34,31 @@ type Matrix interface {
 	Values(w *ecs.World) []float64 // Values for the current model tick, in row-major order (i.e. idx = row*ncols + col).
 }
 
+// MatrixLayers observer interface. Provides dimensionality, and multiple matrices of values per call.
+//
+// See also [Matrix] and [GridLayers]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
+type MatrixLayers interface {
+	Initialize(w *ecs.World)         // Initialize the observer. No other methods are called before this.
+	Update(w *ecs.World)             // Update the observer.
+	Layers() int                     // Number of layers.
+	Dims() (int, int)                // Matrix dimensions.
+	Values(w *ecs.World) [][]float64 // Values for the current model tick, in row-major order (i.e. idx = row*ncols + col). First index is the layer.
+}
+
 // Grid observer interface. Provides dimensionality, axis information, and a matrix of values per call.
 //
-// See also [Matrix]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
+// See also [Matrix] and [GridLayers]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Grid interface {
 	Matrix           // Methods from Matrix observer.
+	X(c int) float64 // X axis coordinates.
+	Y(r int) float64 // Y axis coordinates.
+}
+
+// GridLayers observer interface. Provides dimensionality, axis information, and multiple matrices of values per call.
+//
+// See also [Grid], [Matrix] and [GridLayers]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
+type GridLayers interface {
+	MatrixLayers     // Methods from Matrix observer.
 	X(c int) float64 // X axis coordinates.
 	Y(r int) float64 // Y axis coordinates.
 }

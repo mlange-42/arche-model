@@ -1,7 +1,6 @@
 package observer_test
 
 import (
-	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
@@ -52,9 +51,6 @@ func (o *GridObserver) Values(w *ecs.World) []float64 {
 }
 
 func ExampleGrid() {
-	m := model.New()
-
-	var obs observer.Grid = &GridObserver{}
-	_ = obs.Values(&m.World)
+	var _ observer.Grid = &GridObserver{}
 	// Output:
 }

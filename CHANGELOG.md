@@ -10,6 +10,8 @@
 
 * Observer `RowToTable` as adapter from `Row` to `Table` observer (#37)
 * Observer `MatrixToGrid` as adapter from `Matrix` to `Grid` observer (#38)
+* Observer interfaces `MatrixLayers` and `GridLayers` for multi-layered matrices and grids (#39)
+* Observers `MatrixToLayers`, `GridToLayers` and `LayersToGrid` as adapters (#39)
 * System `PerfTimer` prints total step and average time per tick on finalization (#37)
 
 ## [[v0.2.0]](https://github.com/mlange-42/arche-model/compare/v0.1.0...v0.2.0)

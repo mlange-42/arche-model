@@ -1,7 +1,6 @@
 package observer_test
 
 import (
-	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
@@ -27,9 +26,6 @@ func (o *TableObserver) Values(w *ecs.World) [][]float64 {
 }
 
 func ExampleTable() {
-	m := model.New()
-
-	var obs observer.Table = &TableObserver{}
-	_ = obs.Values(&m.World)
+	var _ observer.Table = &TableObserver{}
 	// Output:
 }
