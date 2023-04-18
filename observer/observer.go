@@ -38,7 +38,7 @@ type Matrix interface {
 //
 // See also [Matrix]. See package [github.com/mlange-42/arche-model/reporter] for usage examples.
 type Grid interface {
-	Matrix        // Methods from Matrix observer.
-	X() []float64 // X axis values.
-	Y() []float64 // Y axis values.
+	Matrix           // Methods from Matrix observer.
+	X(c int) float64 // X axis coordinates.
+	Y(r int) float64 // Y axis coordinates.
 }

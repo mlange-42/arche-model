@@ -29,12 +29,12 @@ func (o *rowObs) Values(w *ecs.World) []float64 {
 func TestRowToTable(t *testing.T) {
 	m := model.New()
 
-	row := rowObs{
+	var row observer.Row = &rowObs{
 		header: []string{"A", "B"},
 		values: []float64{1, 2},
 	}
 
-	table := observer.RowToTable{Observer: &row}
+	var table observer.Table = &observer.RowToTable{Observer: row}
 
 	table.Initialize(&m.World)
 	table.Update(&m.World)
