@@ -11,8 +11,6 @@ func ExampleMatrixToLayers() {
 	var matrix3 observer.Matrix = &MatrixObserver{}
 
 	// A MatrixToGrid observer, wrapping the Matrix observers
-	var _ observer.MatrixLayers = &observer.MatrixToLayers{
-		Observers: []observer.Matrix{matrix1, matrix2, matrix3},
-	}
+	var _ observer.MatrixLayers = observer.MatrixToLayers(matrix1, matrix2, matrix3)
 	// Output:
 }

@@ -9,6 +9,6 @@ func ExampleRowToTable() {
 	var row observer.Row = &RowObserver{}
 
 	// A RowToTable observer, wrapping the Row observer
-	var _ observer.Table = &observer.RowToTable{Observer: row}
+	var _ observer.Table = observer.RowToTable(row)
 	// Output:
 }

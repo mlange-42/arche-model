@@ -2,18 +2,24 @@ package observer
 
 import "github.com/mlange-42/arche/ecs"
 
-// GridToLayers is an observer that serves as adapter from multiple [Grid] observers to a [GridLayers] observer.
-type GridToLayers struct {
+// GridToLayers creates an observer that serves as adapter from multiple [Grid] observers to a [GridLayers] observer.
+func GridToLayers(obs ...Grid) GridLayers {
+	if len(obs) == 0 {
+		panic("no observers given")
+	}
+	return &gridToLayers{
+		Observers: obs,
+	}
+}
+
+// gridToLayers is an observer that serves as adapter from multiple [Grid] observers to a [GridLayers] observer.
+type gridToLayers struct {
 	Observers []Grid
 	values    [][]float64
 }
 
 // Initialize the child observer.
-func (o *GridToLayers) Initialize(w *ecs.World) {
-	if len(o.Observers) == 0 {
-		panic("no observers given")
-	}
-
+func (o *gridToLayers) Initialize(w *ecs.World) {
 	for i, obs := range o.Observers {
 		obs.Initialize(w)
 		if i == 0 {
@@ -32,24 +38,24 @@ func (o *GridToLayers) Initialize(w *ecs.World) {
 }
 
 // Update the child observer.
-func (o *GridToLayers) Update(w *ecs.World) {
+func (o *gridToLayers) Update(w *ecs.World) {
 	for _, obs := range o.Observers {
 		obs.Update(w)
 	}
 }
 
 // Dims returns the matrix dimensions.
-func (o *GridToLayers) Dims() (int, int) {
+func (o *gridToLayers) Dims() (int, int) {
 	return o.Observers[0].Dims()
 }
 
 // Layers returns the number of layers.
-func (o *GridToLayers) Layers() int {
+func (o *gridToLayers) Layers() int {
 	return len(o.Observers)
 }
 
 // Values for the current model tick.
-func (o *GridToLayers) Values(w *ecs.World) [][]float64 {
+func (o *gridToLayers) Values(w *ecs.World) [][]float64 {
 	for i, obs := range o.Observers {
 		o.values[i] = obs.Values(w)
 	}
@@ -57,11 +63,11 @@ func (o *GridToLayers) Values(w *ecs.World) [][]float64 {
 }
 
 // X axis coordinates.
-func (o *GridToLayers) X(c int) float64 {
+func (o *gridToLayers) X(c int) float64 {
 	return o.Observers[0].X(c)
 }
 
 // Y axis coordinates.
-func (o *GridToLayers) Y(r int) float64 {
+func (o *gridToLayers) Y(r int) float64 {
 	return o.Observers[0].Y(r)
 }

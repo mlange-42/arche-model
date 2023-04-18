@@ -15,15 +15,9 @@ func TestLayersToGrid(t *testing.T) {
 	var mat2 observer.Matrix = &matObs{}
 	var mat3 observer.Matrix = &matObs{}
 
-	var layers observer.MatrixLayers = &observer.MatrixToLayers{
-		Observers: []observer.Matrix{
-			mat1, mat2, mat3,
-		},
-	}
+	var layers observer.MatrixLayers = observer.MatrixToLayers(mat1, mat2, mat3)
 
-	var grid observer.GridLayers = &observer.LayersToGrid{
-		Observer: layers,
-	}
+	var grid observer.GridLayers = observer.LayersToLayers(layers, &[2]float64{0, 0}, &[2]float64{1, 1})
 
 	grid.Initialize(&m.World)
 	grid.Update(&m.World)

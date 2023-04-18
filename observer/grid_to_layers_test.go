@@ -15,15 +15,11 @@ func TestGridToLayers(t *testing.T) {
 	var mat2 observer.Matrix = &matObs{}
 	var mat3 observer.Matrix = &matObs{}
 
-	var grid1 observer.Grid = &observer.MatrixToGrid{Observer: mat1}
-	var grid2 observer.Grid = &observer.MatrixToGrid{Observer: mat2}
-	var grid3 observer.Grid = &observer.MatrixToGrid{Observer: mat3}
+	var grid1 observer.Grid = observer.MatrixToGrid(mat1, nil, nil)
+	var grid2 observer.Grid = observer.MatrixToGrid(mat2, nil, nil)
+	var grid3 observer.Grid = observer.MatrixToGrid(mat3, nil, nil)
 
-	var layers observer.GridLayers = &observer.GridToLayers{
-		Observers: []observer.Grid{
-			grid1, grid2, grid3,
-		},
-	}
+	var layers observer.GridLayers = observer.GridToLayers(grid1, grid2, grid3)
 
 	layers.Initialize(&m.World)
 	layers.Update(&m.World)
@@ -50,18 +46,11 @@ func TestGridToLayersFail(t *testing.T) {
 	var mat2 *matObs = &matObs{}
 	mat2.Rows = 15
 
-	var grid1 observer.Grid = &observer.MatrixToGrid{Observer: mat1}
-	var grid2 observer.Grid = &observer.MatrixToGrid{Observer: mat2}
+	var grid1 observer.Grid = observer.MatrixToGrid(mat1, nil, nil)
+	var grid2 observer.Grid = observer.MatrixToGrid(mat2, nil, nil)
 
-	var layers observer.GridLayers = &observer.GridToLayers{
-		Observers: []observer.Grid{
-			grid1, grid2,
-		},
-	}
+	var layers observer.GridLayers = observer.GridToLayers(grid1, grid2)
 	assert.Panics(t, func() { layers.Initialize(&m.World) })
 
-	layers = &observer.GridToLayers{
-		Observers: []observer.Grid{},
-	}
-	assert.Panics(t, func() { layers.Initialize(&m.World) })
+	assert.Panics(t, func() { observer.GridToLayers() })
 }

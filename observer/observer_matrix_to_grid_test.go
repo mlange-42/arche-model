@@ -9,10 +9,10 @@ func ExampleMatrixToGrid() {
 	var matrix observer.Matrix = &MatrixObserver{}
 
 	// A MatrixToGrid observer, wrapping the Matrix observer
-	var _ observer.Grid = &observer.MatrixToGrid{
-		Observer: matrix,
-		Origin:   [...]float64{100, 200},
-		CellSize: [...]float64{1000, 1000},
-	}
+	var _ observer.Grid = observer.MatrixToGrid(
+		matrix,
+		&[...]float64{100, 200},
+		&[...]float64{1000, 1000},
+	)
 	// Output:
 }
