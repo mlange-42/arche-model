@@ -34,7 +34,7 @@ func TestRowToTable(t *testing.T) {
 		values: []float64{1, 2},
 	}
 
-	var table observer.Table = &observer.RowToTable{Observer: row}
+	var table observer.Table = observer.RowToTable(row)
 
 	table.Initialize(&m.World)
 	table.Update(&m.World)
