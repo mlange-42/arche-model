@@ -4,7 +4,7 @@
 
 ### Other
 
-* Increased time precision on Windows for more consistent TPS and FPS (#39)
+* Increased time precision on Windows for more consistent TPS and FPS (#42)
 
 ## [[v0.3.0]](https://github.com/mlange-42/arche-model/compare/v0.2.0...v0.3.0)
 
