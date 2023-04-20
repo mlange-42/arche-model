@@ -43,13 +43,31 @@ func TestSystems(t *testing.T) {
 
 		assert.Panics(t, func() { m.RemoveSystem(&dualSys) })
 
+		assert.Equal(t, 4, len(m.systems))
+		assert.Equal(t, 2, len(m.uiSystems))
+		assert.Equal(t, 0, len(m.toRemove))
+		assert.Equal(t, 0, len(m.uiToRemove))
+
 		m.Run()
+
+		assert.Equal(t, 3, len(m.systems))
+		assert.Equal(t, 1, len(m.uiSystems))
+		assert.Equal(t, 0, len(m.toRemove))
+		assert.Equal(t, 0, len(m.uiToRemove))
+
 		assert.Panics(t, func() { m.initialize() })
 
 		m.RemoveUISystem(&dualSys)
+
+		assert.Equal(t, 2, len(m.systems))
+		assert.Equal(t, 0, len(m.uiSystems))
+		assert.Equal(t, 0, len(m.toRemove))
+		assert.Equal(t, 0, len(m.uiToRemove))
+
 		assert.Panics(t, func() { m.RemoveUISystem(&dualSys) })
 
 		assert.Panics(t, func() { m.RemoveSystem(&termSys) })
+
 		assert.Panics(t, func() { m.RemoveUISystem(&uiSys) })
 
 		assert.Panics(t, func() { m.AddSystem(&termSys) })

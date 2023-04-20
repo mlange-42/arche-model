@@ -117,17 +117,21 @@ func (s *Systems) RemoveUISystem(sys UISystem) {
 
 // Removes systems that were removed during the model step.
 func (s *Systems) removeSystems() {
-	for _, sys := range s.toRemove {
+	rem := s.toRemove
+	remUI := s.uiToRemove
+
+	s.toRemove = s.toRemove[:0]
+	s.uiToRemove = s.uiToRemove[:0]
+
+	for _, sys := range rem {
 		s.removeSystem(sys)
 	}
-	for _, sys := range s.uiToRemove {
+	for _, sys := range remUI {
 		if sys, ok := sys.(System); ok {
 			s.removeSystem(sys)
 		}
 		s.removeUISystem(sys)
 	}
-	s.toRemove = s.toRemove[:0]
-	s.uiToRemove = s.uiToRemove[:0]
 }
 
 func (s *Systems) removeSystem(sys System) {
@@ -314,8 +318,8 @@ func (s *Systems) run() {
 func (s *Systems) reset() {
 	s.systems = []System{}
 	s.uiSystems = []UISystem{}
-	s.toRemove = []System{}
-	s.uiToRemove = []UISystem{}
+	s.toRemove = s.toRemove[:0]
+	s.uiToRemove = s.uiToRemove[:0]
 
 	s.nextDraw = time.Time{}
 	s.nextUpdate = time.Time{}
