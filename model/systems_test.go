@@ -41,6 +41,9 @@ func TestSystems(t *testing.T) {
 			RemoveUI: []UISystem{&uiSys},
 		})
 
+		assert.Equal(t, m.systems, m.Systems.Systems())
+		assert.Equal(t, m.uiSystems, m.Systems.UISystems())
+
 		assert.Panics(t, func() { m.RemoveSystem(&dualSys) })
 
 		assert.Equal(t, 4, len(m.systems))

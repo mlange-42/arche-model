@@ -1,5 +1,15 @@
 # Changelog
 
+## [[v0.4.0]](https://github.com/mlange-42/arche-model/compare/v0.3.1...v0.4.0)
+
+### Breaking changes
+
+* Upgrade to Arche 0.8 (#44)
+
+### Features
+
+* Resource `model.Systems` has methods to get the list of systems, for inspection (#45)
+
 ## [[v0.3.1]](https://github.com/mlange-42/arche-model/compare/v0.3.0...v0.3.1)
 
 ### Other

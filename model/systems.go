@@ -63,6 +63,16 @@ type Systems struct {
 	termRes generic.Resource[resource.Termination]
 }
 
+// Systems returns the normal/non-UI systems.
+func (s *Systems) Systems() []System {
+	return s.systems
+}
+
+// UISystems returns the UI systems.
+func (s *Systems) UISystems() []UISystem {
+	return s.uiSystems
+}
+
 // AddSystem adds a [System] to the model.
 //
 // Panics if the system is also a [UISystem].
