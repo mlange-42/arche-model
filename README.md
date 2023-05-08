@@ -77,7 +77,7 @@ func (s *VelocitySystem) Initialize(w *ecs.World) {
 	s.filter = *generic.NewFilter2[Position, Velocity]()
 
 	mapper := generic.NewMap2[Position, Velocity](w)
-	mapper.NewEntities(s.EntityCount)
+	mapper.NewBatch(s.EntityCount)
 }
 
 // Update the system
