@@ -4,7 +4,7 @@
 
 ### Breaking changes
 
-* Upgrade to Arche 0.8 (#44)
+* Upgrade to Arche 0.8 (#44, #46)
 
 ### Features
 

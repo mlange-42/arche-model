@@ -3,7 +3,7 @@ module github.com/mlange-42/arche-model
 go 1.20
 
 require (
-	github.com/mlange-42/arche v0.7.2-0.20230508150123-1d72fbb6cc5e
+	github.com/mlange-42/arche v0.8.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/exp v0.0.0-20230418202329-0354be287a23
 )
