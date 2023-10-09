@@ -243,10 +243,14 @@ func (s *Systems) wait() {
 
 // Update normal systems.
 func (s *Systems) updateSystems() bool {
+	update := false
 	if s.Paused {
+		update = !time.Now().Before(s.nextUpdate)
+		if update {
+			s.nextUpdate = nextTime(s.nextUpdate, 30)
+		}
 		return false
 	}
-	update := false
 	if s.TPS <= 0 {
 		update = true
 		for _, sys := range s.systems {
