@@ -247,7 +247,8 @@ func (s *Systems) updateSystems() bool {
 	if s.Paused {
 		update = !time.Now().Before(s.nextUpdate)
 		if update {
-			s.nextUpdate = nextTime(s.nextUpdate, 30)
+			tps := s.limitedFps(s.TPS, 10)
+			s.nextUpdate = nextTime(s.nextUpdate, tps)
 		}
 		return false
 	}
@@ -284,7 +285,7 @@ func (s *Systems) updateUISystems(updated bool) {
 			if !time.Now().Before(s.nextDraw) {
 				fps := s.FPS
 				if s.Paused {
-					fps = 30
+					fps = s.limitedFps(s.FPS, 30)
 				}
 				s.nextDraw = nextTime(s.nextDraw, fps)
 				for _, sys := range s.uiSystems {
@@ -340,4 +341,12 @@ func (s *Systems) reset() {
 
 	s.initialized = false
 	s.tickRes = generic.Resource[resource.Tick]{}
+}
+
+// Calculates frame rate capped to target
+func (s *Systems) limitedFps(actual, target float64) float64 {
+	if actual > target || actual <= 0 {
+		return target
+	}
+	return actual
 }
