@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.4.1]](https://github.com/mlange-42/arche-model/compare/v0.4.0...v0.4.1)
+
+### Bugfixes
+
+* Fixes `Systems` spinning at 100% CPU load despite low TPS and FPS (#47, see mlange-42/arche#304)
+
 ## [[v0.4.0]](https://github.com/mlange-42/arche-model/compare/v0.3.1...v0.4.0)
 
 ### Breaking changes

@@ -243,10 +243,15 @@ func (s *Systems) wait() {
 
 // Update normal systems.
 func (s *Systems) updateSystems() bool {
+	update := false
 	if s.Paused {
+		update = !time.Now().Before(s.nextUpdate)
+		if update {
+			tps := s.limitedFps(s.TPS, 10)
+			s.nextUpdate = nextTime(s.nextUpdate, tps)
+		}
 		return false
 	}
-	update := false
 	if s.TPS <= 0 {
 		update = true
 		for _, sys := range s.systems {
@@ -266,29 +271,27 @@ func (s *Systems) updateSystems() bool {
 
 // Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
-	if len(s.uiSystems) > 0 {
-		if !s.Paused && s.FPS <= 0 {
-			if updated {
-				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.world)
-				}
-				for _, sys := range s.uiSystems {
-					sys.PostUpdateUI(s.world)
-				}
+	if !s.Paused && s.FPS <= 0 {
+		if updated {
+			for _, sys := range s.uiSystems {
+				sys.UpdateUI(s.world)
 			}
-		} else {
-			if !time.Now().Before(s.nextDraw) {
-				fps := s.FPS
-				if s.Paused {
-					fps = 30
-				}
-				s.nextDraw = nextTime(s.nextDraw, fps)
-				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.world)
-				}
-				for _, sys := range s.uiSystems {
-					sys.PostUpdateUI(s.world)
-				}
+			for _, sys := range s.uiSystems {
+				sys.PostUpdateUI(s.world)
+			}
+		}
+	} else {
+		if !time.Now().Before(s.nextDraw) {
+			fps := s.FPS
+			if s.Paused {
+				fps = s.limitedFps(s.FPS, 30)
+			}
+			s.nextDraw = nextTime(s.nextDraw, fps)
+			for _, sys := range s.uiSystems {
+				sys.UpdateUI(s.world)
+			}
+			for _, sys := range s.uiSystems {
+				sys.PostUpdateUI(s.world)
 			}
 		}
 	}
@@ -336,4 +339,12 @@ func (s *Systems) reset() {
 
 	s.initialized = false
 	s.tickRes = generic.Resource[resource.Tick]{}
+}
+
+// Calculates frame rate capped to target
+func (s *Systems) limitedFps(actual, target float64) float64 {
+	if actual > target || actual <= 0 {
+		return target
+	}
+	return actual
 }

@@ -3,8 +3,10 @@ package model
 import (
 	"testing"
 
+	"github.com/mlange-42/arche-model/resource"
 	"github.com/mlange-42/arche-model/system"
 	"github.com/mlange-42/arche/ecs"
+	"github.com/mlange-42/arche/generic"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -89,6 +91,7 @@ func TestSystemsInit(t *testing.T) {
 
 	assert.Equal(t, 30.0, m.FPS)
 	assert.Equal(t, 0.0, m.TPS)
+	assert.Equal(t, 5, int(m.time.Tick))
 
 	m = New()
 	m.TPS = 10
@@ -117,12 +120,47 @@ func TestSystemsInit(t *testing.T) {
 	m.Run()
 }
 
+func TestSystemsPaused(t *testing.T) {
+	m := New()
+	m.TPS = 0
+	m.FPS = 0
+
+	m.AddSystem(&system.FixedTermination{Steps: 5})
+	m.AddUISystem(&uiTerminationSystem{Steps: 100})
+
+	m.Paused = true
+	m.Run()
+
+	assert.Equal(t, 0, int(m.time.Tick))
+}
+
 type uiSystem struct{}
 
 func (s *uiSystem) InitializeUI(w *ecs.World) {}
 func (s *uiSystem) UpdateUI(w *ecs.World)     {}
 func (s *uiSystem) PostUpdateUI(w *ecs.World) {}
 func (s *uiSystem) FinalizeUI(w *ecs.World)   {}
+
+type uiTerminationSystem struct {
+	Steps   int
+	step    int
+	termRes generic.Resource[resource.Termination]
+}
+
+func (s *uiTerminationSystem) InitializeUI(w *ecs.World) {
+	s.termRes = generic.NewResource[resource.Termination](w)
+	s.step = 0
+}
+
+func (s *uiTerminationSystem) UpdateUI(w *ecs.World) {
+	if s.step >= s.Steps {
+		term := s.termRes.Get()
+		term.Terminate = true
+	}
+	s.step++
+}
+func (s *uiTerminationSystem) PostUpdateUI(w *ecs.World) {}
+func (s *uiTerminationSystem) FinalizeUI(w *ecs.World)   {}
 
 type dualSystem struct{}
 
