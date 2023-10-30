@@ -271,29 +271,27 @@ func (s *Systems) updateSystems() bool {
 
 // Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
-	if len(s.uiSystems) > 0 {
-		if !s.Paused && s.FPS <= 0 {
-			if updated {
-				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.world)
-				}
-				for _, sys := range s.uiSystems {
-					sys.PostUpdateUI(s.world)
-				}
+	if !s.Paused && s.FPS <= 0 {
+		if updated {
+			for _, sys := range s.uiSystems {
+				sys.UpdateUI(s.world)
 			}
-		} else {
-			if !time.Now().Before(s.nextDraw) {
-				fps := s.FPS
-				if s.Paused {
-					fps = s.limitedFps(s.FPS, 30)
-				}
-				s.nextDraw = nextTime(s.nextDraw, fps)
-				for _, sys := range s.uiSystems {
-					sys.UpdateUI(s.world)
-				}
-				for _, sys := range s.uiSystems {
-					sys.PostUpdateUI(s.world)
-				}
+			for _, sys := range s.uiSystems {
+				sys.PostUpdateUI(s.world)
+			}
+		}
+	} else {
+		if !time.Now().Before(s.nextDraw) {
+			fps := s.FPS
+			if s.Paused {
+				fps = s.limitedFps(s.FPS, 30)
+			}
+			s.nextDraw = nextTime(s.nextDraw, fps)
+			for _, sys := range s.uiSystems {
+				sys.UpdateUI(s.world)
+			}
+			for _, sys := range s.uiSystems {
+				sys.PostUpdateUI(s.world)
 			}
 		}
 	}
