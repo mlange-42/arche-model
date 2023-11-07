@@ -1,9 +1,11 @@
 module github.com/mlange-42/arche-model
 
-go 1.20
+go 1.21
+
+toolchain go1.21.3
 
 require (
-	github.com/mlange-42/arche v0.8.0
+	github.com/mlange-42/arche v0.9.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/exp v0.0.0-20230418202329-0354be287a23
 )

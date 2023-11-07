@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.5.0]](https://github.com/mlange-42/arche-model/compare/v0.4.1...v0.5.0)
+
+### Infrastructure
+
+* Upgrade to Go 1.21 and Arche 0.9.0 (#48)
+
 ## [[v0.4.1]](https://github.com/mlange-42/arche-model/compare/v0.4.0...v0.4.1)
 
 ### Bugfixes
