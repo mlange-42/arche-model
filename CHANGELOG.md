@@ -1,5 +1,11 @@
 # Changelog
 
+## [[v0.6.0]](https://github.com/mlange-42/arche-model/compare/v0.5.0...v0.6.0)
+
+### Breaking changes
+
+* Upgrade to Arche v0.10.0 (#51)
+
 ## [[v0.5.0]](https://github.com/mlange-42/arche-model/compare/v0.4.1...v0.5.0)
 
 ### Infrastructure
