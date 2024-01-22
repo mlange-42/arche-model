@@ -65,12 +65,29 @@ func (m *Model) Seed(seed ...uint64) *Model {
 	return m
 }
 
-// Run runs the model.
+// Run the model. Initializes the model if it is not already initialized.
+// Finalizes the model after the run.
 //
 // Runs until Terminate in the resource resource.Termination is set to true
 // (see [resource.Termination]).
 func (m *Model) Run() {
 	m.Systems.run()
+}
+
+// Initialize the model.
+func (m *Model) Initialize() {
+	m.Systems.initialize()
+}
+
+// Update the model.
+// Return whether the run was terminated.
+func (m *Model) Update() bool {
+	return m.Systems.update()
+}
+
+// Finalize the model.
+func (m *Model) Finalize() {
+	m.Systems.finalize()
 }
 
 // Reset resets the world and removes all systems.
