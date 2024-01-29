@@ -206,10 +206,12 @@ func (s *Systems) initialize() {
 
 	s.nextDraw = time.Time{}
 	s.nextUpdate = time.Time{}
+
+	s.tickRes.Get().Tick = 0
 }
 
 // Update all systems.
-func (s *Systems) update() {
+func (s *Systems) update() bool {
 	s.locked = true
 	update := s.updateSystems()
 	s.updateUISystems(update)
@@ -223,6 +225,32 @@ func (s *Systems) update() {
 	} else {
 		s.wait()
 	}
+
+	return !s.termRes.Get().Terminate
+}
+
+// UpdateSystems updates all normal systems
+func (s *Systems) UpdateSystems() bool {
+	s.locked = true
+	updated := s.updateSystems()
+	s.locked = false
+
+	s.removeSystems()
+
+	if updated {
+		time := s.tickRes.Get()
+		time.Tick++
+	}
+	return !s.termRes.Get().Terminate
+}
+
+// UpdateUISystems updates all UI systems
+func (s *Systems) UpdateUISystems() {
+	s.locked = true
+	s.updateUISystems(true)
+	s.locked = false
+
+	s.removeSystems()
 }
 
 // Calculates and waits the time until the next update of UI update.
@@ -316,12 +344,7 @@ func (s *Systems) run() {
 		s.initialize()
 	}
 
-	time := s.tickRes.Get()
-	time.Tick = 0
-	terminate := s.termRes.Get()
-
-	for !terminate.Terminate {
-		s.update()
+	for s.update() {
 	}
 
 	s.finalize()
