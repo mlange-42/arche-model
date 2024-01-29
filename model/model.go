@@ -81,14 +81,15 @@ func (m *Model) Initialize() {
 
 // Update the model's systems.
 // Return whether the run should continue.
+//
+// Panics if [Model.Initialize] was not called.
 func (m *Model) Update() bool {
-	if m.Systems.Paused {
-		return true
-	}
 	return m.Systems.UpdateSystems()
 }
 
 // UpdateUI the model's UI systems.
+//
+// Panics if [Model.Initialize] was not called.
 func (m *Model) UpdateUI() {
 	m.Systems.UpdateUISystems()
 }

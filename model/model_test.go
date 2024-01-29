@@ -36,7 +36,14 @@ func TestModelStep(t *testing.T) {
 			Steps: 10,
 		})
 
+		assert.Panics(t, func() { m.Update() })
+		assert.Panics(t, func() { m.UpdateUI() })
+
 		m.Initialize()
+
+		m.Paused = true
+		m.Update()
+		m.Paused = false
 
 		for m.Update() {
 			m.UpdateUI()

@@ -231,6 +231,12 @@ func (s *Systems) update() bool {
 
 // UpdateSystems updates all normal systems
 func (s *Systems) UpdateSystems() bool {
+	if !s.initialized {
+		panic("the model is not initialized")
+	}
+	if s.Paused {
+		return true
+	}
 	s.locked = true
 	updated := s.updateSystemsSimple()
 	s.locked = false
@@ -247,6 +253,9 @@ func (s *Systems) UpdateSystems() bool {
 
 // UpdateUISystems updates all UI systems
 func (s *Systems) UpdateUISystems() {
+	if !s.initialized {
+		panic("the model is not initialized")
+	}
 	s.locked = true
 	s.updateUISystemsSimple()
 	s.locked = false
@@ -296,9 +305,6 @@ func (s *Systems) updateSystems() bool {
 
 // Update normal systems.
 func (s *Systems) updateSystemsSimple() bool {
-	if s.Paused {
-		return false
-	}
 	for _, sys := range s.systems {
 		sys.Update(s.world)
 	}
