@@ -79,10 +79,15 @@ func (m *Model) Initialize() {
 	m.Systems.initialize()
 }
 
-// Update the model.
-// Return whether the run was terminated.
+// Update the model's systems.
+// Return whether the run should continue.
 func (m *Model) Update() bool {
-	return m.Systems.update()
+	return m.Systems.UpdateSystems()
+}
+
+// UpdateUI the model's UI systems.
+func (m *Model) UpdateUI() {
+	m.Systems.UpdateUISystems()
 }
 
 // Finalize the model.

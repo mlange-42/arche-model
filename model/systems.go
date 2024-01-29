@@ -229,6 +229,30 @@ func (s *Systems) update() bool {
 	return !s.termRes.Get().Terminate
 }
 
+// UpdateSystems updates all normal systems
+func (s *Systems) UpdateSystems() bool {
+	s.locked = true
+	updated := s.updateSystems()
+	s.locked = false
+
+	s.removeSystems()
+
+	if updated {
+		time := s.tickRes.Get()
+		time.Tick++
+	}
+	return !s.termRes.Get().Terminate
+}
+
+// UpdateUISystems updates all UI systems
+func (s *Systems) UpdateUISystems() {
+	s.locked = true
+	s.updateUISystems(true)
+	s.locked = false
+
+	s.removeSystems()
+}
+
 // Calculates and waits the time until the next update of UI update.
 func (s *Systems) wait() {
 	nextUpdate := s.nextUpdate

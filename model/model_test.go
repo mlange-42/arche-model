@@ -25,6 +25,26 @@ func TestModel(t *testing.T) {
 	}
 }
 
+func TestModelStep(t *testing.T) {
+	m := model.New()
+
+	for i := 0; i < 3; i++ {
+		m.Reset()
+		m.Seed(123)
+
+		m.AddSystem(&system.FixedTermination{
+			Steps: 10,
+		})
+
+		m.Initialize()
+
+		for m.Update() {
+			m.UpdateUI()
+		}
+		m.Finalize()
+	}
+}
+
 func TestModelSeed(t *testing.T) {
 	m := model.New()
 	m.Seed(123)
