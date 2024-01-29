@@ -82,6 +82,9 @@ func (m *Model) Initialize() {
 // Update the model's systems.
 // Return whether the run should continue.
 func (m *Model) Update() bool {
+	if m.Systems.Paused {
+		return true
+	}
 	return m.Systems.UpdateSystems()
 }
 

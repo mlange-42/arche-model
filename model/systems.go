@@ -232,7 +232,7 @@ func (s *Systems) update() bool {
 // UpdateSystems updates all normal systems
 func (s *Systems) UpdateSystems() bool {
 	s.locked = true
-	updated := s.updateSystems()
+	updated := s.updateSystemsSimple()
 	s.locked = false
 
 	s.removeSystems()
@@ -241,13 +241,14 @@ func (s *Systems) UpdateSystems() bool {
 		time := s.tickRes.Get()
 		time.Tick++
 	}
+
 	return !s.termRes.Get().Terminate
 }
 
 // UpdateUISystems updates all UI systems
 func (s *Systems) UpdateUISystems() {
 	s.locked = true
-	s.updateUISystems(true)
+	s.updateUISystemsSimple()
 	s.locked = false
 
 	s.removeSystems()
@@ -282,31 +283,43 @@ func (s *Systems) updateSystems() bool {
 	}
 	if s.TPS <= 0 {
 		update = true
-		for _, sys := range s.systems {
-			sys.Update(s.world)
-		}
+		s.updateSystemsSimple()
 	} else {
 		update = !time.Now().Before(s.nextUpdate)
 		if update {
 			s.nextUpdate = nextTime(s.nextUpdate, s.TPS)
-			for _, sys := range s.systems {
-				sys.Update(s.world)
-			}
+			s.updateSystemsSimple()
 		}
 	}
 	return update
+}
+
+// Update normal systems.
+func (s *Systems) updateSystemsSimple() bool {
+	if s.Paused {
+		return false
+	}
+	for _, sys := range s.systems {
+		sys.Update(s.world)
+	}
+	return true
+}
+
+// Update ui systems.
+func (s *Systems) updateUISystemsSimple() {
+	for _, sys := range s.uiSystems {
+		sys.UpdateUI(s.world)
+	}
+	for _, sys := range s.uiSystems {
+		sys.PostUpdateUI(s.world)
+	}
 }
 
 // Update UI systems.
 func (s *Systems) updateUISystems(updated bool) {
 	if !s.Paused && s.FPS <= 0 {
 		if updated {
-			for _, sys := range s.uiSystems {
-				sys.UpdateUI(s.world)
-			}
-			for _, sys := range s.uiSystems {
-				sys.PostUpdateUI(s.world)
-			}
+			s.updateUISystemsSimple()
 		}
 	} else {
 		if !time.Now().Before(s.nextDraw) {
@@ -315,12 +328,7 @@ func (s *Systems) updateUISystems(updated bool) {
 				fps = s.limitedFps(s.FPS, 30)
 			}
 			s.nextDraw = nextTime(s.nextDraw, fps)
-			for _, sys := range s.uiSystems {
-				sys.UpdateUI(s.world)
-			}
-			for _, sys := range s.uiSystems {
-				sys.PostUpdateUI(s.world)
-			}
+			s.updateUISystemsSimple()
 		}
 	}
 }
