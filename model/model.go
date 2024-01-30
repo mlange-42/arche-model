@@ -65,11 +65,15 @@ func (m *Model) Seed(seed ...uint64) *Model {
 	return m
 }
 
-// Run the model. Initializes the model if it is not already initialized.
+// Run the model, updating systems and ui systems according to Model.TPS and Model.FPS, respectively.
+// Initializes the model if it is not already initialized.
 // Finalizes the model after the run.
 //
 // Runs until Terminate in the resource resource.Termination is set to true
 // (see [resource.Termination]).
+//
+// To perform updates manually, see [Model.Update] and [Model.UpdateUI],
+// as well as [Model.Initialize] and [Model.Finalize].
 func (m *Model) Run() {
 	m.Systems.run()
 }
@@ -82,16 +86,20 @@ func (m *Model) Initialize() {
 // Update the model's systems.
 // Return whether the run should continue.
 //
+// Ignores Model.TPS.
+//
 // Panics if [Model.Initialize] was not called.
 func (m *Model) Update() bool {
-	return m.Systems.UpdateSystems()
+	return m.Systems.updateSystems()
 }
 
 // UpdateUI the model's UI systems.
 //
+// Ignores Model.FPS.
+//
 // Panics if [Model.Initialize] was not called.
 func (m *Model) UpdateUI() {
-	m.Systems.UpdateUISystems()
+	m.Systems.updateUISystems()
 }
 
 // Finalize the model.

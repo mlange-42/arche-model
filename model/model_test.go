@@ -82,6 +82,24 @@ func ExampleModel() {
 	// Output:
 }
 
+func ExampleModel_manualUpdate() {
+	// Create a new, seeded model.
+	m := model.New().Seed(123)
+
+	// Add systems.
+	m.AddSystem(&system.FixedTermination{
+		Steps: 100,
+	})
+
+	// Run the simulation manually.
+	m.Initialize()
+	for m.Update() {
+		m.UpdateUI()
+	}
+	m.Finalize()
+	// Output:
+}
+
 func ExampleModel_Reset() {
 	// Create a new model.
 	m := model.New()
