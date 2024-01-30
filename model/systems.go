@@ -213,8 +213,8 @@ func (s *Systems) initialize() {
 // Update all systems.
 func (s *Systems) update() bool {
 	s.locked = true
-	update := s.updateSystems()
-	s.updateUISystems(update)
+	update := s.updateSystemsTimed()
+	s.updateUISystemsTimed(update)
 	s.locked = false
 
 	s.removeSystems()
@@ -229,8 +229,8 @@ func (s *Systems) update() bool {
 	return !s.termRes.Get().Terminate
 }
 
-// UpdateSystems updates all normal systems
-func (s *Systems) UpdateSystems() bool {
+// updateSystems updates all normal systems
+func (s *Systems) updateSystems() bool {
 	if !s.initialized {
 		panic("the model is not initialized")
 	}
@@ -251,8 +251,8 @@ func (s *Systems) UpdateSystems() bool {
 	return !s.termRes.Get().Terminate
 }
 
-// UpdateUISystems updates all UI systems
-func (s *Systems) UpdateUISystems() {
+// updateUISystems updates all UI systems
+func (s *Systems) updateUISystems() {
 	if !s.initialized {
 		panic("the model is not initialized")
 	}
@@ -280,7 +280,15 @@ func (s *Systems) wait() {
 }
 
 // Update normal systems.
-func (s *Systems) updateSystems() bool {
+func (s *Systems) updateSystemsSimple() bool {
+	for _, sys := range s.systems {
+		sys.Update(s.world)
+	}
+	return true
+}
+
+// Update normal systems.
+func (s *Systems) updateSystemsTimed() bool {
 	update := false
 	if s.Paused {
 		update = !time.Now().Before(s.nextUpdate)
@@ -303,14 +311,6 @@ func (s *Systems) updateSystems() bool {
 	return update
 }
 
-// Update normal systems.
-func (s *Systems) updateSystemsSimple() bool {
-	for _, sys := range s.systems {
-		sys.Update(s.world)
-	}
-	return true
-}
-
 // Update ui systems.
 func (s *Systems) updateUISystemsSimple() {
 	for _, sys := range s.uiSystems {
@@ -322,7 +322,7 @@ func (s *Systems) updateUISystemsSimple() {
 }
 
 // Update UI systems.
-func (s *Systems) updateUISystems(updated bool) {
+func (s *Systems) updateUISystemsTimed(updated bool) {
 	if !s.Paused && s.FPS <= 0 {
 		if updated {
 			s.updateUISystemsSimple()
