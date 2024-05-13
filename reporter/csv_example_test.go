@@ -13,10 +13,9 @@ func ExampleCSV() {
 
 	// Add a CSV reporter with an Observer.
 	m.AddSystem(&reporter.CSV{
-		Observer:       &ExampleObserver{},
-		File:           "../out/test.csv",
-		Sep:            ";",
-		UpdateInterval: 10,
+		Observer: &ExampleObserver{},
+		File:     "../out/test.csv",
+		Sep:      ";",
 	})
 
 	// Add a termination system that ends the simulation.

@@ -12,16 +12,17 @@ func ExamplePrint() {
 
 	// Add a Print reporter with an Observer.
 	m.AddSystem(&reporter.Print{
-		Observer:       &ExampleObserver{},
-		UpdateInterval: 10,
+		Observer: &ExampleObserver{},
 	})
 
 	// Add a termination system that ends the simulation.
-	m.AddSystem(&system.FixedTermination{Steps: 20})
+	m.AddSystem(&system.FixedTermination{Steps: 3})
 
 	// Run the simulation.
 	m.Run()
 	// Output:
+	// [A B C]
+	// [1 2 3]
 	// [A B C]
 	// [1 2 3]
 	// [A B C]

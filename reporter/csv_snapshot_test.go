@@ -14,9 +14,8 @@ func TestSnapshotCSV(t *testing.T) {
 	m := model.New()
 
 	m.AddSystem(&reporter.SnapshotCSV{
-		Observer:       &ExampleSnapshotObserver{},
-		FilePattern:    "../out/test-%06d.csv",
-		UpdateInterval: 10,
+		Observer:    &ExampleSnapshotObserver{},
+		FilePattern: "../out/test-%06d.csv",
 	})
 	m.AddSystem(&system.FixedTermination{Steps: 100})
 

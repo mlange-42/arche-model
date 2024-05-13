@@ -14,9 +14,8 @@ func TestCSV(t *testing.T) {
 	m := model.New()
 
 	m.AddSystem(&reporter.CSV{
-		Observer:       &ExampleObserver{},
-		File:           "../out/test.csv",
-		UpdateInterval: 10,
+		Observer: &ExampleObserver{},
+		File:     "../out/test.csv",
 	})
 	m.AddSystem(&system.FixedTermination{Steps: 100})
 

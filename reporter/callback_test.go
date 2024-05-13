@@ -20,6 +20,7 @@ func ExampleCallback() {
 		Callback: func(step int, row []float64) {
 			data = append(data, row)
 		},
+		HeaderCallback: func(header []string) {},
 	})
 
 	// Add a termination system that ends the simulation.
