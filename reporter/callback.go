@@ -7,10 +7,10 @@ import (
 
 // Callback reporter calling a function on each update.
 type Callback struct {
-	Observer       observer.Row // Observer to get data from.
-	UpdateInterval int          // Update/print interval in model ticks.
-	HeaderCallback func(header []string)
-	Callback       func(step int, row []float64)
+	Observer       observer.Row                  // Observer to get data from.
+	UpdateInterval int                           // Update interval in model ticks.
+	HeaderCallback func(header []string)         // Called with the header of the observer during initialization.
+	Callback       func(step int, row []float64) // Called with step and data row on each update (subject to UpdateInterval).
 	step           int64
 }
 
