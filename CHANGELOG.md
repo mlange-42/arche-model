@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.7.0...main)
+
+### Bugfixes
+
+* Fix typo in error message when adding UI system as normal system (#60)
+
 ## [[v0.7.0]](https://github.com/mlange-42/arche-model/compare/v0.6.0...v0.7.0)
 
 ### Features
