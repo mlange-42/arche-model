@@ -5,7 +5,7 @@ go 1.21
 toolchain go1.21.6
 
 require (
-	github.com/mlange-42/arche v0.10.0
+	github.com/mlange-42/arche v0.12.0
 	github.com/stretchr/testify v1.8.2
 	golang.org/x/exp v0.0.0-20230418202329-0354be287a23
 )

@@ -82,7 +82,7 @@ func (s *Systems) AddSystem(sys System) {
 		panic("adding systems after model initialization is not implemented yet")
 	}
 	if sys, ok := sys.(UISystem); ok {
-		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddSystem.", sys))
+		panic(fmt.Sprintf("System %T is also an UI system. Must be added via AddUISystem.", sys))
 	}
 	s.systems = append(s.systems, sys)
 }
