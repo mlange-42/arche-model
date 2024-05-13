@@ -1,39 +1,40 @@
 package reporter
 
 import (
-	"fmt"
-
 	"github.com/mlange-42/arche-model/observer"
 	"github.com/mlange-42/arche/ecs"
 )
 
-// Print reporter to print a table row per time step.
-type Print struct {
+// Callback reporter calling a function on each update.
+type Callback struct {
 	Observer       observer.Row // Observer to get data from.
 	UpdateInterval int          // Update/print interval in model ticks.
-	header         []string
+	HeaderCallback func(header []string)
+	Callback       func(step int, row []float64)
 	step           int64
 }
 
 // Initialize the system
-func (s *Print) Initialize(w *ecs.World) {
+func (s *Callback) Initialize(w *ecs.World) {
 	s.Observer.Initialize(w)
-	s.header = s.Observer.Header()
 	if s.UpdateInterval == 0 {
 		s.UpdateInterval = 1
+	}
+	if s.HeaderCallback != nil {
+		s.HeaderCallback(s.Observer.Header())
 	}
 	s.step = 0
 }
 
 // Update the system
-func (s *Print) Update(w *ecs.World) {
+func (s *Callback) Update(w *ecs.World) {
 	s.Observer.Update(w)
 	if s.step%int64(s.UpdateInterval) == 0 {
 		values := s.Observer.Values(w)
-		fmt.Printf("%v\n%v\n", s.header, values)
+		s.Callback(int(s.step), values)
 	}
 	s.step++
 }
 
 // Finalize the system
-func (s *Print) Finalize(w *ecs.World) {}
+func (s *Callback) Finalize(w *ecs.World) {}

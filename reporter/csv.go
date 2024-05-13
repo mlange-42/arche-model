@@ -28,6 +28,9 @@ type CSV struct {
 func (s *CSV) Initialize(w *ecs.World) {
 	s.Observer.Initialize(w)
 	s.header = s.Observer.Header()
+	if s.UpdateInterval == 0 {
+		s.UpdateInterval = 1
+	}
 	if s.Sep == "" {
 		s.Sep = ","
 	}
