@@ -27,6 +27,9 @@ type SnapshotCSV struct {
 func (s *SnapshotCSV) Initialize(w *ecs.World) {
 	s.Observer.Initialize(w)
 	s.header = s.Observer.Header()
+	if s.UpdateInterval == 0 {
+		s.UpdateInterval = 1
+	}
 
 	if s.Sep == "" {
 		s.Sep = ","

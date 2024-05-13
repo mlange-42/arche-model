@@ -2,9 +2,14 @@
 
 ## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.7.0...main)
 
+### Features
+
+* Adds `reporter.Callback` for direct retrieval of observer output in Go code (#61)
+
 ### Bugfixes
 
 * Fix typo in error message when adding UI system as normal system (#60)
+* Fix reporters did not work with unspecified `UpdateInterval` (#61)
 
 ## [[v0.7.0]](https://github.com/mlange-42/arche-model/compare/v0.6.0...v0.7.0)
 
