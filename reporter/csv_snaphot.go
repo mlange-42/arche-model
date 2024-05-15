@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 
 	"github.com/mlange-42/arche-model/observer"
@@ -67,7 +68,7 @@ func (s *SnapshotCSV) Update(w *ecs.World) {
 		s.builder.Reset()
 		for _, row := range values {
 			for i, v := range row {
-				fmt.Fprintf(&s.builder, "%f", v)
+				fmt.Fprint(&s.builder, strconv.FormatFloat(v, 'f', -1, 64))
 				if i < len(row)-1 {
 					fmt.Fprint(&s.builder, s.Sep)
 				}
