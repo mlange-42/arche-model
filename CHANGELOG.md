@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.8.0...main)
+
+### Other
+
+* Improve float formatting in CSV output (#64)
+
 ## [[v0.8.0]](https://github.com/mlange-42/arche-model/compare/v0.7.0...0.8.0)
 
 ### Features
