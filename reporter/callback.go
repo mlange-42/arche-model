@@ -11,6 +11,7 @@ type Callback struct {
 	UpdateInterval int                           // Update interval in model ticks.
 	HeaderCallback func(header []string)         // Called with the header of the observer during initialization.
 	Callback       func(step int, row []float64) // Called with step and data row on each update (subject to UpdateInterval).
+	Final          bool                          // Whether Callback should be called on finalization only, instead of on every tick.
 	step           int64
 }
 
@@ -29,12 +30,20 @@ func (s *Callback) Initialize(w *ecs.World) {
 // Update the system
 func (s *Callback) Update(w *ecs.World) {
 	s.Observer.Update(w)
-	if s.step%int64(s.UpdateInterval) == 0 {
+
+	if !s.Final && s.step%int64(s.UpdateInterval) == 0 {
 		values := s.Observer.Values(w)
 		s.Callback(int(s.step), values)
 	}
+
 	s.step++
 }
 
 // Finalize the system
-func (s *Callback) Finalize(w *ecs.World) {}
+func (s *Callback) Finalize(w *ecs.World) {
+	if !s.Final {
+		return
+	}
+	values := s.Observer.Values(w)
+	s.Callback(int(s.step), values)
+}

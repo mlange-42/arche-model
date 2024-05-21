@@ -10,7 +10,7 @@
 
 ### Features
 
-* Adds `reporter.Callback` for direct retrieval of observer output in Go code (#61)
+* Adds `reporter.Callback` for direct retrieval of observer output in Go code (#61, #65)
 
 ### Bugfixes
 

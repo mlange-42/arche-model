@@ -2,10 +2,12 @@ package reporter_test
 
 import (
 	"fmt"
+	"testing"
 
 	"github.com/mlange-42/arche-model/model"
 	"github.com/mlange-42/arche-model/reporter"
 	"github.com/mlange-42/arche-model/system"
+	"github.com/stretchr/testify/assert"
 )
 
 func ExampleCallback() {
@@ -32,4 +34,22 @@ func ExampleCallback() {
 	fmt.Println(data)
 	// Output:
 	// [[1 2 3] [1 2 3] [1 2 3]]
+}
+
+func TestCallbackFinal(t *testing.T) {
+	m := model.New()
+	counter := 0
+
+	m.AddSystem(&reporter.Callback{
+		Observer: &ExampleObserver{},
+		Callback: func(step int, row []float64) {
+			counter++
+		},
+		HeaderCallback: func(header []string) {},
+		Final:          true,
+	})
+	m.AddSystem(&system.FixedTermination{Steps: 3})
+	m.Run()
+
+	assert.Equal(t, 1, counter)
 }
