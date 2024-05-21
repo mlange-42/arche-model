@@ -1,5 +1,11 @@
 # Changelog
 
+## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.8.0...main)
+
+### Features
+
+* Adds option `Final` to `reporter.Callback` to report data once on finalize instead of on ticks (#65)
+
 ## [[v0.8.1]](https://github.com/mlange-42/arche-model/compare/v0.8.0...v0.8.1)
 
 ### Other
