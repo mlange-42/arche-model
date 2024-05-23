@@ -2,9 +2,14 @@
 
 ## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.8.0...main)
 
+### Breaking changes
+
+* Renames `reporter.Callback` to `reporter.RowCallback` (#66)
+
 ### Features
 
-* Adds option `Final` to `reporter.Callback` to report data once on finalize instead of on ticks (#65)
+* Adds option `Final` to `reporter.RowCallback` to report data once on finalize instead of on ticks (#65)
+* Adds `reporter.TableCallback` for direct retrieval of table observer output in Go code (#66)
 
 ## [[v0.8.1]](https://github.com/mlange-42/arche-model/compare/v0.8.0...v0.8.1)
 
@@ -16,7 +21,7 @@
 
 ### Features
 
-* Adds `reporter.Callback` for direct retrieval of observer output in Go code (#61)
+* Adds `reporter.Callback` for direct retrieval of row observer output in Go code (#61)
 
 ### Bugfixes
 
