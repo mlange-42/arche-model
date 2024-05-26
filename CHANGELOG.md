@@ -1,6 +1,6 @@
 # Changelog
 
-## [[unpublished]](https://github.com/mlange-42/arche-model/compare/v0.8.0...main)
+## [[v0.9.0]](https://github.com/mlange-42/arche-model/compare/v0.8.1...v0.9.0)
 
 ### Breaking changes
 
