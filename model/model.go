@@ -27,9 +27,11 @@ type Model struct {
 }
 
 // New creates a new model.
-func New(config ...ecs.Config) *Model {
+//
+// See [ecs.NewWorld] for the arguments.
+func New(initialCapacity ...int) *Model {
 	var mod = Model{
-		World: ecs.NewWorld(config...),
+		World: ecs.NewWorld(initialCapacity...),
 	}
 	mod.FPS = 30
 	mod.TPS = 0
